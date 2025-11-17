@@ -16,7 +16,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            background: #f8f9fa; /* Light grey background like the other tool */
             padding: 20px;
         }
 
@@ -76,7 +76,8 @@
         button {
             width: 100%;
             padding: 10px;
-            background: #007bff;
+            /* --- KEY CHANGE: Updated color scheme --- */
+            background: #00796b; 
             color: white;
             border: none;
             border-radius: 4px;
@@ -87,7 +88,8 @@
         }
 
         button:hover:not(:disabled) {
-            background: #0056b3;
+            /* --- KEY CHANGE: Updated hover color --- */
+            background: #004d40;
         }
 
         button:disabled {
@@ -342,7 +344,7 @@
             font-size: 12px;
             margin-top: 0;
         }
-
+        
         @media (max-width: 900px) {
             .main-grid {
                 grid-template-columns: 1fr; /* Stack chart and controls vertically */
@@ -351,6 +353,28 @@
                 height: 450px; /* Adjust chart height for smaller screens */
             }
         }
+        
+        /* --- START: New Footer CSS --- */
+        footer {
+            text-align: center;
+            color: #6c757d; /* a muted gray */
+            margin-top: 40px;
+            padding-top: 20px;
+            font-size: 0.85rem;
+            border-top: 1px solid #ddd;
+        }
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+        footer a {
+            color: #00796b; /* use the primary color */
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        /* --- END: New Footer CSS --- */
+
     </style>
 </head>
 <body>
@@ -364,7 +388,7 @@
                 </div>
                 
                 <div class="status-bar" id="statusBar">
-                    Ready to import data. Upload ÄKTA (TXT/CSV), CSV, or Excel file to begin.
+                    Ready to import data. Upload ÄKTA (TXT/TSV), CSV, or Excel file to begin.
                 </div>
             </div>
 
@@ -562,6 +586,37 @@
             </div>
         </div>
     </div>
+
+    <!-- --- START: New Footer HTML --- -->
+    <footer>
+        <p>
+            <strong>Developed by:</strong> Anindya Karmaker, PhD Candidate, McDonald-Nandi Lab.
+        </p>
+        <p>
+            <strong>Source Code:</strong> 
+            <!-- IMPORTANT: Please update this link to point to your actual GitHub repository -->
+            <a href="https://github.com/Anindya-Karmaker/Chromatogram-Plotter-Analyzer" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: text-bottom; margin-right: 4px;">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                View on GitHub
+            </a>
+        </p>
+        <p>
+            <strong>Funding:</strong> The development of this tool was supported by the National Science Foundation Partnerships for Innovation (PFI) program under Grant No. 2016563.
+        </p>
+        <p>
+            <strong>License:</strong> All rights reserved. Unauthorized copy or distribution of this application is strictly prohibited.
+        </p>
+        <p>
+            <strong>Data Privacy:</strong> This is a client-side tool. No data is uploaded to, saved on, or transmitted to any server.
+        </p>
+        <p>
+            <strong>Disclaimer:</strong> This tool is for research and planning purposes only. The user is solely responsible for verifying all calculations and results before use.
+        </p>
+    </footer>
+    <!-- --- END: New Footer HTML --- -->
+
 
     <script>
         // Global state
@@ -864,7 +919,7 @@
                  isRelayouting = false;
             }
         }
-
+        
         function plotGraph() {
             const checkedBoxes = document.querySelectorAll('#plotCheckboxes input[type="checkbox"]:checked');
             selectedVariables = [];
@@ -910,9 +965,7 @@
                 });
             }
             
-            let fractionTickVals = [];
-            let fractionTickText = [];
-
+            const annotations = [];
             if (document.getElementById('showFractionsCheck').checked && fractionData.length > 0) {
                 fractionData.forEach(function(fraction) {
                     if (fraction.show) {
@@ -921,32 +974,39 @@
                             line: { color: 'gray', dash: 'dot', width: 1.5 },
                             name: fraction.label, showlegend: false, hoverinfo: 'text', text: 'Fraction: ' + fraction.label
                         });
-                        fractionTickVals.push(fraction.position);
-                        fractionTickText.push(fraction.label);
+                        annotations.push({
+                            x: fraction.position,
+                            y: 0,
+                            xref: 'x',
+                            yref: 'paper',
+                            text: fraction.label,
+                            showarrow: false,
+                            font: { size: 10, color: '#444' },
+                            yanchor: 'top',
+                            yshift: -5,
+                            xanchor: 'center',
+                            textangle: -45
+                        });
                     }
                 });
             }
             
             const layout = {
-                // --- KEY CHANGE: MODIFIED LAYOUT FOR CONSISTENT LEGEND PLACEMENT ---
                 title: 'Chromatogram Analysis',
                 margin: { t: 50, b: 150 },
                 legend: {
                     orientation: 'h',
                     yanchor: 'top',
-                    y: -0.2, // Position the legend's top just below the x-axis area
+                    y: -0.3, 
                     xanchor: 'center',
                     x: 0.5
                 },
                 xaxis: {
                     title: 'Volume (mL)',
                     domain: [0, plotDomainEnd],
-                    tickmode: 'array',
-                    tickvals: fractionTickVals,
-                    ticktext: fractionTickText,
-                    tickangle: -45,
                     automargin: true 
                 },
+                annotations: annotations,
                 height: 550,
                 hovermode: 'x unified'
             };
@@ -1061,7 +1121,6 @@
             URL.revokeObjectURL(url);
         }
 
-        // Custom Import Functions
         function openCustomImport() { document.getElementById('customImportModal').style.display = 'block'; }
         document.getElementById('customFileInput').addEventListener('change', function() {
             document.getElementById('previewTableContainer').style.display = 'none';
@@ -1083,15 +1142,12 @@
                 };
                 reader.readAsArrayBuffer(file);
             } else {
-                // --- FIX STARTS HERE ---
                 let delimiter = document.getElementById('delimiterSelect').value;
                 if (delimiter === '\\t') {
                     delimiter = '\t';
                 }
-                // --- FIX ENDS HERE ---
-
                 Papa.parse(file, {
-                    delimiter: delimiter, // Use the corrected delimiter
+                    delimiter: delimiter,
                     skipEmptyLines: true,
                     complete: results => {
                         customParsedData = results.data;
@@ -1166,7 +1222,6 @@
             onDataImported();
         }
 
-        // Concentration Calculator
         function openConcentrationCalculator() {
             document.getElementById('calcIntegrationResults').innerHTML = 
                 `<div><strong>Integration Range:</strong> ${integrationResults.start.toFixed(2)} - ${integrationResults.end.toFixed(2)} mL</div>
@@ -1188,7 +1243,6 @@
             document.getElementById('calculatedAmount').textContent = amount.toFixed(3) + ' mg';
         }
 
-        // Fraction Manager
         function openFractionManager() {
             renderFractionList();
             document.getElementById('fractionModal').style.display = 'block';
@@ -1281,11 +1335,9 @@
             updateStatus('Fractions saved: ' + fractionData.length + ' fraction(s)');
         }
 
-        // Utility Functions
         function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
         function updateStatus(message) { document.getElementById('statusBar').textContent = message; }
 
-        // Event Listeners
         document.getElementById('primaryVarSelect').addEventListener('change', setupIntegrationInputs);
         document.getElementById('integStartValue').addEventListener('change', () => {
             updateIntegration();
