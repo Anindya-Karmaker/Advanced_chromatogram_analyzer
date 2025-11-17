@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chromatogram Analyzer - Advanced</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .chart-container {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            height: 600px;
+            position: relative;
+        }
+
+        .controls-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .control-group {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+        }
+
+        .control-group h3 {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            margin-top: 5px;
+        }
+
+        button:hover:not(:disabled) {
+            background: #0056b3;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .style-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .range-control {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .range-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .range-item label {
+            font-size: 13px;
+            color: #555;
+            min-width: 40px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .status-bar {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e8f4f8;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .button-secondary {
+            background: #6c757d;
+        }
+
+        .button-secondary:hover:not(:disabled) {
+            background: #545b62;
+        }
+
+        .button-success {
+            background: #28a745;
+        }
+
+        .button-success:hover:not(:disabled) {
+            background: #218838;
+        }
+
+        .button-danger {
+            background: #dc3545;
+        }
+
+        .button-danger:hover:not(:disabled) {
+            background: #c82333;
+        }
+
+        .integration-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+            padding: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .table-container {
+            max-height: 300px;
+            overflow: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 35px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .fraction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        .fraction-item button {
+            width: auto;
+            padding: 5px 10px;
+            font-size: 12px;
+            margin-top: 0;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr; /* Stack chart and controls vertically */
+            }
+            .chart-container {
+                height: 450px; /* Adjust chart height for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧬 Advanced Chromatogram Analyzer</h1>
+        
+        <div class="main-grid">
+            <div>
+                <div class="chart-container">
+                    <div id="plotlyChart"></div>
+                </div>
+                
+                <div class="status-bar" id="statusBar">
+                    Ready to import data. Upload ÄKTA (TXT/TSV), CSV, or Excel file to begin.
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="control-group">
+                    <h3>📂 Data Import</h3>
+                    <div class="file-input-wrapper">
+                        <button onclick="document.getElementById('fileInput').click()">
+                            📁 Open ÄKTA File (TXT/CSV)
+                        </button>
+                        <input type="file" id="fileInput" accept=".txt,.csv">
+                    </div>
+                    <button onclick="openCustomImport()">
+                        ⚙️ Custom Import (CSV/Excel)
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <h3>📊 Plot Selection & Styling</h3>
+                    <div class="checkbox-group" id="plotCheckboxes">
+                        <p style="color: #999; font-size: 13px;">Load data to see variables</p>
+                    </div>
+                    <button onclick="plotGraph()" id="plotBtn" disabled>
+                        📊 Update Plot
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <h3>📐 Integration & Analysis</h3>
+                    <div style="margin-bottom: 10px;">
+                        <label style="font-size: 13px; color: #555;">Primary Variable:</label>
+                        <select id="primaryVarSelect" disabled>
+                            <option value="">Select variable...</option>
+                        </select>
+                    </div>
+                    <div class="range-control">
+                        <div class="range-item">
+                            <label>Start:</label>
+                            <input type="number" id="integStartValue" value="0" step="0.1" disabled>
+                        </div>
+                        <div class="range-item">
+                            <label>End:</label>
+                            <input type="number" id="integEndValue" value="0" step="0.1" disabled>
+                        </div>
+                    </div>
+                    <div class="integration-info" id="integrationInfo">
+                        <div><strong>Area:</strong> -</div>
+                        <div><strong>Volume:</strong> -</div>
+                        <div><strong>Range:</strong> -</div>
+                    </div>
+                    <button onclick="openConcentrationCalculator()" id="calcBtn" disabled class="button-success">
+                        🧪 Calculate Concentration
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <h3>🧫 Fractions</h3>
+                    <button onclick="openFractionManager()" id="fractionBtn" disabled>
+                        📋 Manage Fractions
+                    </button>
+                    <div style="margin-top: 10px;">
+                        <label style="font-size: 13px;">
+                            <input type="checkbox" id="showFractionsCheck" disabled onchange="plotGraph()">
+                            Show Fractions on Plot
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>💾 Export & Actions</h3>
+                    <button onclick="saveImage()" id="saveBtn" disabled>
+                        💾 Save as PNG
+                    </button>
+                    <button onclick="copyToClipboard()" id="copyBtn" disabled class="button-secondary">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button onclick="exportData()" id="exportBtn" disabled class="button-secondary">
+                        📤 Export Data (CSV)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Import Modal -->
+    <div id="customImportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Custom Data Import</h2>
+                <span class="close" onclick="closeModal('customImportModal')">&times;</span>
+            </div>
+            
+            <div class="form-group">
+                <label>Select File:</label>
+                <input type="file" id="customFileInput" accept=".csv,.xlsx,.xls">
+            </div>
+            
+            <div class="form-group">
+                <label>Delimiter (for CSV):</label>
+                <select id="delimiterSelect">
+                    <option value=",">Comma (,)</option>
+                    <option value="\t">Tab</option>
+                    <option value=";">Semicolon (;)</option>
+                    <option value=" ">Space</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Header Row Number:</label>
+                <input type="number" id="headerRowInput" value="0" min="0">
+            </div>
+            
+            <button onclick="previewCustomFile()" class="button-secondary">Preview Data</button>
+            
+            <div class="table-container" id="previewTableContainer" style="display: none; margin-top: 15px;">
+                <table id="previewTable"></table>
+            </div>
+            
+            <div id="columnMappingSection" style="display: none; margin-top: 20px;">
+                <h3>Map Columns to Variables</h3>
+                <div id="columnMappings"></div>
+            </div>
+            
+            <div class="button-group" style="margin-top: 20px;">
+                <button onclick="importCustomData()" id="importCustomBtn" disabled class="button-success">Import</button>
+                <button onclick="closeModal('customImportModal')" class="button-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Concentration Calculator Modal -->
+    <div id="concentrationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Protein Concentration Calculator</h2>
+                <span class="close" onclick="closeModal('concentrationModal')">&times;</span>
+            </div>
+            
+            <div style="background: #f0f0f0; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 10px;">Integration Results</h3>
+                <div id="calcIntegrationResults"></div>
+            </div>
+            
+            <h3 style="margin-bottom: 10px;">Beer-Lambert Law Parameters</h3>
+            
+            <div class="form-group">
+                <label>Molar Extinction Coefficient (M⁻¹cm⁻¹):</label>
+                <input type="number" id="extCoeffInput" value="1.0" step="0.01" oninput="calculateConcentration()">
+            </div>
+            
+            <div class="form-group">
+                <label>Path Length (cm):</label>
+                <input type="number" id="pathLengthInput" value="1.0" step="0.1" oninput="calculateConcentration()">
+            </div>
+            
+            <div class="form-group">
+                <label>Molecular Weight (g/mol):</label>
+                <input type="number" id="molecularWeightInput" value="1000" step="1" oninput="calculateConcentration()">
+            </div>
+            
+            <div style="background: #d4edda; padding: 15px; border-radius: 4px; margin-top: 20px;">
+                <h3 style="margin-bottom: 10px;">Calculated Amount</h3>
+                <div style="font-size: 24px; font-weight: bold; color: #155724;" id="calculatedAmount">0.000 mg</div>
+            </div>
+            
+            <button onclick="closeModal('concentrationModal')" style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+
+    <!-- Fraction Manager Modal -->
+    <div id="fractionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Fraction Manager</h2>
+                <span class="close" onclick="closeModal('fractionModal')">&times;</span>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="margin-bottom: 10px;">Add New Fraction</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px;">
+                    <input type="number" id="newFractionPos" placeholder="Position (mL)" step="0.1">
+                    <input type="text" id="newFractionLabel" placeholder="Label">
+                    <button onclick="addFraction()" class="button-success">Add</button>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 10px;">Existing Fractions</h3>
+            <div id="fractionList" style="max-height: 400px; overflow-y: auto;">
+                <p style="color: #999;">No fractions defined</p>
+            </div>
+            
+            <div class="button-group" style="margin-top: 20px;">
+                <button onclick="saveFractions()" class="button-success">Save Changes</button>
+                <button onclick="closeModal('fractionModal')" class="button-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let rawData = {};
+        let currentFileName = '';
+        let fullDataRange = { min: 0, max: 100 };
+        let selectedVariables = [];
+        let plotColors = {};
+        let plotStyles = {};
+        let plotLabels = {};
+        let fractionData = [];
+        let customParsedData = null;
+        let integrationResults = { area: 0, volume: 0, start: 0, end: 0 };
+        let isRelayouting = false;
+        
+        const defaultColors = ['#0066CC', '#00CC66', '#CC0000', '#CC00CC', '#00CCCC', '#FF9900', '#666666', '#FF00FF'];
+        const dashStyles = {
+            'solid': 'solid',
+            'dash': 'dash',
+            'dot': 'dot',
+            'dashdot': 'dashdot'
+        };
+
+        // File input handler for ÄKTA files
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            currentFileName = file.name;
+            updateStatus('Loading: ' + file.name + '...');
+            
+            Papa.parse(file, {
+                delimiter: '\t',
+                skipEmptyLines: true,
+                complete: function(results) {
+                    processAktaFile(results.data);
+                },
+                error: function(error) {
+                    updateStatus('Error: ' + error.message);
+                }
+            });
+        });
+
+        function processAktaFile(data) {
+            try {
+                if (data.length < 3) {
+                    updateStatus('Error: File has too few rows');
+                    return;
+                }
+
+                const headers = data[1] || [];
+                const dataRows = data.slice(2);
+                
+                rawData = {};
+                
+                const columnMap = [
+                    { pattern: 'UV', name: 'UV' },
+                    { pattern: 'ph', name: 'pH', caseSensitive: false },
+                    { pattern: 'Cond', name: 'Conductivity' },
+                    { pattern: 'Conc', name: 'Gradient' },
+                    { pattern: 'flow', name: 'Flow rate', caseSensitive: false },
+                    { pattern: 'pressure', name: 'System Pressure', caseSensitive: false },
+                    { pattern: 'Fraction', name: 'Fraction' }
+                ];
+                
+                columnMap.forEach(function(mapping) {
+                    const idx = headers.findIndex(function(h) {
+                        if (!h) return false;
+                        const header = mapping.caseSensitive === false ? h.toLowerCase() : h;
+                        const pattern = mapping.caseSensitive === false ? mapping.pattern.toLowerCase() : mapping.pattern;
+                        return header.includes(pattern);
+                    });
+                    
+                    if (idx >= 0) {
+                        const varName = mapping.name;
+                        
+                        if (varName === 'Fraction') {
+                            // Process fractions
+                            fractionData = [];
+                            dataRows.forEach(function(row) {
+                                if (row[idx] && row[idx + 1]) {
+                                    const pos = parseFloat(row[idx]);
+                                    const label = row[idx + 1];
+                                    if (!isNaN(pos)) {
+                                        fractionData.push({ position: pos, label: label, show: true });
+                                    }
+                                }
+                            });
+                        } else {
+                            // Process numerical data
+                            rawData[varName] = { x: [], y: [] };
+                            dataRows.forEach(function(row) {
+                                if (row[idx] && row[idx + 1]) {
+                                    const x = parseFloat(row[idx]);
+                                    const y = parseFloat(row[idx + 1]);
+                                    if (!isNaN(x) && !isNaN(y) && y >= 0) {
+                                        rawData[varName].x.push(x);
+                                        rawData[varName].y.push(y);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+                
+                // Remove empty datasets
+                Object.keys(rawData).forEach(function(key) {
+                    if (rawData[key].x.length === 0) {
+                        delete rawData[key];
+                    }
+                });
+                
+                if (Object.keys(rawData).length === 0) {
+                    updateStatus('Error: No valid data found in file');
+                    return;
+                }
+                
+                onDataImported();
+                
+            } catch (error) {
+                updateStatus('Error processing file: ' + error.message);
+            }
+        }
+
+        function onDataImported() {
+            // Calculate full data range
+            let allX = [];
+            Object.keys(rawData).forEach(function(key) {
+                allX = allX.concat(rawData[key].x);
+            });
+            
+            fullDataRange.min = Math.min.apply(null, allX);
+            fullDataRange.max = Math.max.apply(null, allX);
+            
+            // Reset and initialize colors, styles, and labels
+            plotLabels = {};
+            Object.keys(rawData).forEach(function(varName, idx) {
+                plotLabels[varName] = varName;
+                if (!plotColors[varName]) {
+                    plotColors[varName] = defaultColors[idx % defaultColors.length];
+                }
+                if (!plotStyles[varName]) {
+                    plotStyles[varName] = 'solid';
+                }
+            });
+            
+            // Enable controls
+            document.getElementById('plotBtn').disabled = false;
+            document.getElementById('primaryVarSelect').disabled = false;
+            document.getElementById('integStartValue').disabled = false;
+            document.getElementById('integEndValue').disabled = false;
+            document.getElementById('saveBtn').disabled = false;
+            document.getElementById('copyBtn').disabled = false;
+            document.getElementById('exportBtn').disabled = false;
+            document.getElementById('calcBtn').disabled = false;
+            document.getElementById('fractionBtn').disabled = false;
+            document.getElementById('showFractionsCheck').disabled = false;
+            
+            // Populate checkboxes with style controls
+            const container = document.getElementById('plotCheckboxes');
+            container.innerHTML = '';
+            
+            Object.keys(rawData).forEach(function(varName, idx) {
+                const wrapper = document.createElement('div');
+                wrapper.style.marginBottom = '10px';
+                
+                const checkDiv = document.createElement('div');
+                checkDiv.className = 'checkbox-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'check_' + varName;
+                checkbox.value = varName;
+                checkbox.checked = idx < 2;
+                
+                const label = document.createElement('label');
+                label.htmlFor = 'check_' + varName;
+                label.textContent = varName;
+                
+                checkDiv.appendChild(checkbox);
+                checkDiv.appendChild(label);
+                wrapper.appendChild(checkDiv);
+                
+                const labelInput = document.createElement('input');
+                labelInput.type = 'text';
+                labelInput.value = plotLabels[varName];
+                labelInput.placeholder = 'Custom Label';
+                labelInput.style.marginTop = '5px';
+                labelInput.onchange = function() {
+                    plotLabels[varName] = this.value;
+                };
+                wrapper.appendChild(labelInput);
+
+                const styleControls = document.createElement('div');
+                styleControls.className = 'style-controls';
+                
+                const colorInput = document.createElement('input');
+                colorInput.type = 'color';
+                colorInput.className = 'color-picker';
+                colorInput.value = plotColors[varName];
+                colorInput.onchange = function() {
+                    plotColors[varName] = this.value;
+                };
+                
+                const styleSelect = document.createElement('select');
+                Object.keys(dashStyles).forEach(function(style) {
+                    const option = document.createElement('option');
+                    option.value = style;
+                    option.textContent = style.charAt(0).toUpperCase() + style.slice(1);
+                    styleSelect.appendChild(option);
+                });
+                styleSelect.value = plotStyles[varName];
+                styleSelect.onchange = function() {
+                    plotStyles[varName] = this.value;
+                };
+                
+                styleControls.appendChild(colorInput);
+                styleControls.appendChild(styleSelect);
+                wrapper.appendChild(styleControls);
+                
+                container.appendChild(wrapper);
+            });
+            
+            // Populate primary variable selector
+            const select = document.getElementById('primaryVarSelect');
+            select.innerHTML = '<option value="">Select variable...</option>';
+            Object.keys(rawData).forEach(function(varName) {
+                const option = document.createElement('option');
+                option.value = varName;
+                option.textContent = varName;
+                select.appendChild(option);
+            });
+            
+            if (rawData['UV']) {
+                select.value = 'UV';
+            }
+            
+            setupIntegrationInputs();
+            updateStatus('Data loaded: ' + Object.keys(rawData).length + ' variables found');
+            plotGraph();
+        }
+
+        function setupIntegrationInputs() {
+            const primaryVar = document.getElementById('primaryVarSelect').value;
+            if (!primaryVar || !rawData[primaryVar]) return;
+            
+            const data = rawData[primaryVar];
+            const min = Math.min.apply(null, data.x);
+            const max = Math.max.apply(null, data.x);
+            const range = max - min;
+            
+            const start = min + range * 0.25;
+            const end = min + range * 0.75;
+            
+            document.getElementById('integStartValue').value = start.toFixed(2);
+            document.getElementById('integEndValue').value = end.toFixed(2);
+            
+            updateIntegration();
+        }
+
+        function handleRelayout(eventData) {
+            if (isRelayouting) return; // Prevent infinite loops
+
+            const xrange = eventData['xaxis.range[0]'] ? [eventData['xaxis.range[0]'], eventData['xaxis.range[1]']] : null;
+            
+            if (!xrange) return; // Not an x-axis zoom/pan event, so do nothing.
+
+            isRelayouting = true; 
+
+            const updateLayout = {};
+            
+            selectedVariables.forEach(function(varName, idx) {
+                const data = rawData[varName];
+                if (!data || data.x.length === 0) return;
+
+                let minY = null;
+                let maxY = null;
+                
+                for (let i = 0; i < data.x.length; i++) {
+                    if (data.x[i] >= xrange[0] && data.x[i] <= xrange[1]) {
+                        const yVal = data.y[i];
+                        if (minY === null || yVal < minY) minY = yVal;
+                        if (maxY === null || yVal > maxY) maxY = yVal;
+                    }
+                }
+                
+                if (minY !== null && maxY !== null) {
+                    const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
+                    const range = maxY - minY;
+                    const padding = range === 0 ? 0.1 : range * 0.05;
+                    updateLayout[axisId + '.range'] = [minY - padding, maxY + padding];
+                }
+            });
+            
+            if (Object.keys(updateLayout).length > 0) {
+                Plotly.relayout('plotlyChart', updateLayout).then(() => {
+                    isRelayouting = false;
+                });
+            } else {
+                 isRelayouting = false;
+            }
+        }
+
+        function plotGraph() {
+            const checkedBoxes = document.querySelectorAll('#plotCheckboxes input[type="checkbox"]:checked');
+            selectedVariables = [];
+            checkedBoxes.forEach(function(cb) {
+                selectedVariables.push(cb.value);
+            });
+            
+            if (selectedVariables.length === 0) {
+                Plotly.purge('plotlyChart');
+                updateStatus('Please select at least one variable to plot');
+                return;
+            }
+            
+            const traces = [];
+            
+            const numSecondaryAxes = Math.max(0, selectedVariables.length - 1);
+            const spacePerAxis = 0.08; 
+            const plotDomainEnd = 1.0 - (numSecondaryAxes * spacePerAxis);
+
+            selectedVariables.forEach(function(varName, idx) {
+                const data = rawData[varName];
+                traces.push({
+                    x: data.x, y: data.y, name: plotLabels[varName] || varName, type: 'scatter', mode: 'lines',
+                    line: { color: plotColors[varName], dash: dashStyles[plotStyles[varName]], width: 2 },
+                    yaxis: idx === 0 ? 'y' : 'y' + (idx + 1)
+                });
+            });
+            
+            const startVal = parseFloat(document.getElementById('integStartValue').value);
+            const endVal = parseFloat(document.getElementById('integEndValue').value);
+            
+            if (!isNaN(startVal)) {
+                traces.push({
+                    x: [startVal, startVal], y: [0, 1], yaxis: 'y', type: 'scatter', mode: 'lines',
+                    line: { color: 'red', dash: 'dash', width: 2 }, name: 'Integration Start', showlegend: false
+                });
+            }
+            
+            if (!isNaN(endVal)) {
+                traces.push({
+                    x: [endVal, endVal], y: [0, 1], yaxis: 'y', type: 'scatter', mode: 'lines',
+                    line: { color: 'red', dash: 'dash', width: 2 }, name: 'Integration End', showlegend: false
+                });
+            }
+            
+            let fractionTickVals = [];
+            let fractionTickText = [];
+
+            if (document.getElementById('showFractionsCheck').checked && fractionData.length > 0) {
+                fractionData.forEach(function(fraction) {
+                    if (fraction.show) {
+                        traces.push({
+                            x: [fraction.position, fraction.position], y: [0, 1], yaxis: 'y', type: 'scatter', mode: 'lines',
+                            line: { color: 'gray', dash: 'dot', width: 1.5 },
+                            name: fraction.label, showlegend: false, hoverinfo: 'text', text: 'Fraction: ' + fraction.label
+                        });
+                        fractionTickVals.push(fraction.position);
+                        fractionTickText.push(fraction.label);
+                    }
+                });
+            }
+            
+            const layout = {
+                // --- KEY CHANGE: MODIFIED LAYOUT FOR CONSISTENT LEGEND PLACEMENT ---
+                title: 'Chromatogram Analysis',
+                margin: { t: 50, b: 150 },
+                legend: {
+                    orientation: 'h',
+                    yanchor: 'top',
+                    y: -0.2, // Position the legend's top just below the x-axis area
+                    xanchor: 'center',
+                    x: 0.5
+                },
+                xaxis: {
+                    title: 'Volume (mL)',
+                    domain: [0, plotDomainEnd],
+                    tickmode: 'array',
+                    tickvals: fractionTickVals,
+                    ticktext: fractionTickText,
+                    tickangle: -45,
+                    automargin: true 
+                },
+                height: 550,
+                hovermode: 'x unified'
+            };
+            
+            selectedVariables.forEach(function(varName, idx) {
+                const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
+                layout[axisId] = {
+                    title: plotLabels[varName] || varName,
+                    titlefont: { color: plotColors[varName] },
+                    tickfont: { color: plotColors[varName] },
+                    automargin: true
+                };
+                
+                if (idx > 0) {
+                    layout[axisId].overlaying = 'y';
+                    layout[axisId].side = 'right';
+                    layout[axisId].position = plotDomainEnd + (idx - 1) * spacePerAxis;
+                    layout[axisId].showgrid = false;
+                    layout[axisId].showline = true;
+                    layout[axisId].linewidth = 2;
+                    layout[axisId].linecolor = plotColors[varName];
+                }
+            });
+            
+            const config = {
+                responsive: true, displayModeBar: true, displaylogo: false,
+                modeBarButtonsToAdd: ['pan2d', 'zoom2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d'],
+                toImageButtonOptions: {
+                    format: 'png', filename: currentFileName.replace(/\.[^/.]+$/, '') + '_chromatogram',
+                    height: 800, width: 1200, scale: 2
+                }
+            };
+            
+            Plotly.newPlot('plotlyChart', traces, layout, config);
+            
+            document.getElementById('plotlyChart').on('plotly_relayout', handleRelayout);
+
+            updateStatus('Plotted ' + selectedVariables.length + ' variable(s)');
+            updateIntegration();
+        }
+
+        function updateIntegration() {
+            const primaryVar = document.getElementById('primaryVarSelect').value;
+            if (!primaryVar || !rawData[primaryVar]) {
+                document.getElementById('integrationInfo').innerHTML = 
+                    '<div><strong>Area:</strong> -</div><div><strong>Volume:</strong> -</div><div><strong>Range:</strong> -</div>';
+                return;
+            }
+            
+            const startVal = parseFloat(document.getElementById('integStartValue').value);
+            const endVal = parseFloat(document.getElementById('integEndValue').value);
+            
+            const data = rawData[primaryVar];
+            const filtered = [];
+            for (let i = 0; i < data.x.length; i++) {
+                if (data.x[i] >= startVal && data.x[i] <= endVal) {
+                    filtered.push({ x: data.x[i], y: data.y[i] });
+                }
+            }
+            
+            if (filtered.length > 1) {
+                let area = 0;
+                for (let i = 1; i < filtered.length; i++) {
+                    const dx = filtered[i].x - filtered[i - 1].x;
+                    const avgY = (filtered[i].y + filtered[i - 1].y) / 2;
+                    area += dx * avgY;
+                }
+                
+                const volume = endVal - startVal;
+                integrationResults = { area: area, volume: volume, start: startVal, end: endVal };
+                
+                document.getElementById('integrationInfo').innerHTML = 
+                    '<div><strong>Area:</strong> ' + area.toFixed(2) + ' mL·mAU</div>' +
+                    '<div><strong>Volume:</strong> ' + volume.toFixed(2) + ' mL</div>' +
+                    '<div><strong>Range:</strong> ' + startVal.toFixed(2) + ' - ' + endVal.toFixed(2) + ' mL</div>';
+            }
+        }
+
+        function saveImage() {
+            Plotly.downloadImage('plotlyChart', {
+                format: 'png', width: 1200, height: 800,
+                filename: currentFileName.replace(/\.[^/.]+$/, '') + '_chromatogram'
+            });
+        }
+
+        function copyToClipboard() {
+            Plotly.toImage('plotlyChart', { format: 'png', width: 1200, height: 800 })
+                .then(dataUrl => fetch(dataUrl))
+                .then(res => res.blob())
+                .then(blob => {
+                    navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+                        .then(() => updateStatus('Image copied to clipboard!'))
+                        .catch(err => updateStatus('Error copying to clipboard: ' + err));
+                });
+        }
+
+        function exportData() {
+            if (Object.keys(rawData).length === 0) return;
+            
+            let csv = 'Variable,Volume (mL),Value\n';
+            Object.keys(rawData).forEach(function(varName) {
+                const data = rawData[varName];
+                data.x.forEach((x, i) => { csv += `${varName},${x},${data.y[i]}\n`; });
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = currentFileName.replace(/\.[^/.]+$/, '') + '_data.csv';
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Custom Import Functions
+        function openCustomImport() { document.getElementById('customImportModal').style.display = 'block'; }
+        document.getElementById('customFileInput').addEventListener('change', function() {
+            document.getElementById('previewTableContainer').style.display = 'none';
+            document.getElementById('columnMappingSection').style.display = 'none';
+            document.getElementById('importCustomBtn').disabled = true;
+        });
+
+        function previewCustomFile() {
+            const file = document.getElementById('customFileInput').files[0];
+            if (!file) { alert('Please select a file first'); return; }
+
+            if (file.name.toLowerCase().match(/\.(xlsx|xls)$/)) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+                    const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+                    customParsedData = jsonData;
+                    displayPreview(jsonData);
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                // --- FIX STARTS HERE ---
+                let delimiter = document.getElementById('delimiterSelect').value;
+                if (delimiter === '\\t') {
+                    delimiter = '\t';
+                }
+                // --- FIX ENDS HERE ---
+
+                Papa.parse(file, {
+                    delimiter: delimiter, // Use the corrected delimiter
+                    skipEmptyLines: true,
+                    complete: results => {
+                        customParsedData = results.data;
+                        displayPreview(results.data);
+                    }
+                });
+            }
+        }
+
+        function displayPreview(data) {
+            const headerRow = parseInt(document.getElementById('headerRowInput').value);
+            const previewRows = data.slice(0, Math.min(10, data.length));
+            const table = document.getElementById('previewTable');
+            table.innerHTML = '';
+            previewRows.forEach((row, idx) => {
+                const tr = table.insertRow();
+                row.forEach(cell => {
+                    const cellEl = tr.insertCell();
+                    cellEl.outerHTML = `<${idx === headerRow ? 'th' : 'td'}>${cell || ''}</${idx === headerRow ? 'th' : 'td'}>`;
+                });
+            });
+            document.getElementById('previewTableContainer').style.display = 'block';
+            createColumnMappings(data[headerRow] || data[0]);
+        }
+
+        function createColumnMappings(headers) {
+            const container = document.getElementById('columnMappings');
+            container.innerHTML = '';
+            const variables = ['UV', 'pH', 'Conductivity', 'Gradient', 'Flow rate', 'System Pressure'];
+            variables.forEach(varName => {
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                div.innerHTML = `<label>${varName}:</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <select id="x_${varName}">${['<option value="">X-axis (Volume/Time)</option>'].concat(headers.map((h, i) => `<option value="${i}">Col ${i}: ${h || 'Unnamed'}</option>`)).join('')}</select>
+                        <select id="y_${varName}">${['<option value="">Y-axis (Value)</option>'].concat(headers.map((h, i) => `<option value="${i}">Col ${i}: ${h || 'Unnamed'}</option>`)).join('')}</select>
+                    </div>`;
+                container.appendChild(div);
+            });
+            document.getElementById('columnMappingSection').style.display = 'block';
+            document.getElementById('importCustomBtn').disabled = false;
+        }
+
+        function importCustomData() {
+            if (!customParsedData) return;
+            const headerRow = parseInt(document.getElementById('headerRowInput').value);
+            const dataRows = customParsedData.slice(headerRow + 1);
+            rawData = {};
+            const variables = ['UV', 'pH', 'Conductivity', 'Gradient', 'Flow rate', 'System Pressure'];
+            variables.forEach(varName => {
+                const xIdx = document.getElementById(`x_${varName}`).value;
+                const yIdx = document.getElementById(`y_${varName}`).value;
+                if (xIdx !== '' && yIdx !== '') {
+                    rawData[varName] = { x: [], y: [] };
+                    dataRows.forEach(row => {
+                        const x = parseFloat(row[xIdx]);
+                        const y = parseFloat(row[yIdx]);
+                        if (!isNaN(x) && !isNaN(y)) {
+                            rawData[varName].x.push(x);
+                            rawData[varName].y.push(y);
+                        }
+                    });
+                    if (rawData[varName].x.length === 0) delete rawData[varName];
+                }
+            });
+            if (Object.keys(rawData).length === 0) {
+                alert('No valid data could be imported. Please check your column mappings.');
+                return;
+            }
+            currentFileName = document.getElementById('customFileInput').files[0].name;
+            closeModal('customImportModal');
+            onDataImported();
+        }
+
+        // Concentration Calculator
+        function openConcentrationCalculator() {
+            document.getElementById('calcIntegrationResults').innerHTML = 
+                `<div><strong>Integration Range:</strong> ${integrationResults.start.toFixed(2)} - ${integrationResults.end.toFixed(2)} mL</div>
+                 <div><strong>Peak Area:</strong> ${integrationResults.area.toFixed(2)} mL·mAU</div>
+                 <div><strong>Peak Volume:</strong> ${integrationResults.volume.toFixed(2)} mL</div>`;
+            document.getElementById('concentrationModal').style.display = 'block';
+            calculateConcentration();
+        }
+
+        function calculateConcentration() {
+            const extCoeff = parseFloat(document.getElementById('extCoeffInput').value);
+            const pathLength = parseFloat(document.getElementById('pathLengthInput').value);
+            const mw = parseFloat(document.getElementById('molecularWeightInput').value);
+            if (isNaN(extCoeff) || isNaN(pathLength) || isNaN(mw) || extCoeff === 0 || pathLength === 0) {
+                document.getElementById('calculatedAmount').textContent = 'N/A';
+                return;
+            }
+            const amount = (integrationResults.area * mw) / (extCoeff * pathLength * 1000);
+            document.getElementById('calculatedAmount').textContent = amount.toFixed(3) + ' mg';
+        }
+
+        // Fraction Manager
+        function openFractionManager() {
+            renderFractionList();
+            document.getElementById('fractionModal').style.display = 'block';
+        }
+
+        function renderFractionList() {
+            const container = document.getElementById('fractionList');
+            if (fractionData.length === 0) {
+                container.innerHTML = '<p style="color: #999;">No fractions defined</p>';
+                return;
+            }
+            container.innerHTML = '';
+            fractionData.sort((a, b) => a.position - b.position);
+            
+            fractionData.forEach((fraction, idx) => {
+                const div = document.createElement('div');
+                div.className = 'fraction-item';
+
+                const leftSide = document.createElement('div');
+                leftSide.style.cssText = 'display: flex; align-items: center; flex-grow: 1; margin-right: 10px;';
+
+                const showCheck = document.createElement('input');
+                showCheck.type = 'checkbox';
+                showCheck.checked = fraction.show !== false;
+                showCheck.style.marginRight = '8px';
+                showCheck.onchange = function() { fractionData[idx].show = this.checked; };
+
+                const info = document.createElement('div');
+                info.innerHTML = `<strong>${fraction.label}</strong> @ ${fraction.position.toFixed(2)} mL`;
+                info.style.flexGrow = '1';
+
+                const editInput = document.createElement('input');
+                editInput.type = 'text';
+                editInput.value = fraction.label;
+                editInput.style.cssText = 'width: 150px; display: none;';
+                editInput.id = 'edit_' + idx;
+
+                const btnGroup = document.createElement('div');
+                btnGroup.style.cssText = 'display: flex; gap: 5px; flex-shrink: 0;';
+                
+                const editBtn = document.createElement('button');
+                editBtn.textContent = 'Edit';
+                editBtn.className = 'button-secondary';
+                editBtn.onclick = () => {
+                    if (editInput.style.display === 'none') {
+                        info.style.display = 'none';
+                        editInput.style.display = 'block';
+                        editBtn.textContent = 'Save';
+                    } else {
+                        fraction.label = editInput.value;
+                        info.innerHTML = `<strong>${fraction.label}</strong> @ ${fraction.position.toFixed(2)} mL`;
+                        info.style.display = 'block';
+                        editInput.style.display = 'none';
+                        editBtn.textContent = 'Edit';
+                    }
+                };
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.className = 'button-danger';
+                deleteBtn.onclick = () => {
+                    fractionData.splice(idx, 1);
+                    renderFractionList();
+                };
+                
+                btnGroup.appendChild(editBtn);
+                btnGroup.appendChild(deleteBtn);
+                leftSide.appendChild(showCheck);
+                leftSide.appendChild(info);
+                leftSide.appendChild(editInput);
+                div.appendChild(leftSide);
+                div.appendChild(btnGroup);
+                container.appendChild(div);
+            });
+        }
+
+        function addFraction() {
+            const pos = parseFloat(document.getElementById('newFractionPos').value);
+            const label = document.getElementById('newFractionLabel').value.trim();
+            if (isNaN(pos) || !label) { alert('Please enter both position and label'); return; }
+            fractionData.push({ position: pos, label: label, show: true });
+            document.getElementById('newFractionPos').value = '';
+            document.getElementById('newFractionLabel').value = '';
+            renderFractionList();
+        }
+
+        function saveFractions() {
+            closeModal('fractionModal');
+            if (document.getElementById('showFractionsCheck').checked) plotGraph();
+            updateStatus('Fractions saved: ' + fractionData.length + ' fraction(s)');
+        }
+
+        // Utility Functions
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+        function updateStatus(message) { document.getElementById('statusBar').textContent = message; }
+
+        // Event Listeners
+        document.getElementById('primaryVarSelect').addEventListener('change', setupIntegrationInputs);
+        document.getElementById('integStartValue').addEventListener('change', () => {
+            updateIntegration();
+            if (Object.keys(rawData).length > 0) plotGraph();
+        });
+        document.getElementById('integEndValue').addEventListener('change', () => {
+            updateIntegration();
+            if (Object.keys(rawData).length > 0) plotGraph();
+        });
+
+        window.onclick = event => {
+            if (event.target.className === 'modal') event.target.style.display = 'none';
+        };
+
+        console.log('Advanced Chromatogram Analyzer initialized');
+    </script>
+</body>
+</html>
