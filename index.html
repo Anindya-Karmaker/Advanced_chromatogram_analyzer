@@ -431,10 +431,7 @@
                     <h3>📊 Plot Selection & Styling</h3>
                     <div class="checkbox-group" id="plotCheckboxes">
                         <p style="color: #999; font-size: 13px;">Load data to see variables</p>
-                    </div>
-                    <button onclick="plotGraph()" id="plotBtn" disabled>
-                        📊 Update Plot
-                    </button>
+                    </div>                    
                     <hr style="margin: 15px 0;">
                     <div class="range-control" style="gap: 5px;">
                         <div class="range-item">
@@ -446,6 +443,9 @@
                             <input type="number" id="xAxisEnd" step="1" disabled onchange="plotGraph()">
                         </div>
                     </div>
+                    <button onclick="plotGraph()" id="plotBtn" disabled>
+                        📊 Update Plot
+                    </button>
                 </div>
 
                 <div class="control-group">
@@ -1416,7 +1416,7 @@
             if (document.getElementById('showRegionsCheck').checked && regionData.length > 0) {
                 regionData.forEach(region => {
                     shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: region.start, y0: 0, x1: region.end, y1: 1, fillcolor: region.color, opacity: 0.2, line: { width: 0 }, layer: 'below' });
-                    annotations.push({ x: (region.start + region.end) / 2, y: 1.05, xref: 'x', yref: 'paper', text: `<b>${region.label}</b>`, showarrow: false, font: { size: fontSettings.axisSize, color: 'black' }, xanchor: 'center' });
+                    annotations.push({ x: (region.start + region.end) / 2, y: 1.025, xref: 'x', yref: 'paper', text: `<b>${region.label}</b>`, showarrow: false, font: { size: fontSettings.axisSize, color: 'black' }, yanchor: 'bottom' });
                     traces.push({ x: [null], y: [null], type: 'scatter', mode: 'markers', name: region.label, marker: { symbol: 'square', color: region.color, size: 15, line: { width: 1, color: '#666' } }, showlegend: true });
                 });
             }
@@ -1430,29 +1430,39 @@
             const availableWidth = container.clientWidth - 30; 
             const calculatedHeight = availableWidth * (9 / 16); 
 
+
             const layout = {
                 font: { family: fontSettings.family },
                 title: { text: fontSettings.chartTitle, font: { size: fontSettings.titleSize } },
-                margin: { t: 100, b: 100, l: 60, r: 10 }, 
+                margin: { t: 80, b: 150, l: 60, r: 20 },
                 legend: { orientation: 'h', yanchor: 'top', y: -0.25, xanchor: 'center', x: 0.5 },
                 xaxis: { title: 'Volume (mL)', domain: [0, plotDomainEnd], automargin: true, titlefont: { size: fontSettings.axisSize }, tickfont: { size: fontSettings.axisSize }, range: xAxisRange },
                 annotations: annotations,
                 shapes: shapes,
-                height: calculatedHeight, 
+                height: calculatedHeight,
                 hovermode: 'x unified'
+                // --- KEY CHANGE: The 'height' property is permanently removed ---
             };
             
             selectedVariables.forEach(function(varName, idx) {
                 const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
-                layout[axisId] = { title: plotLabels[varName] || varName, titlefont: { color: plotColors[varName], size: fontSettings.axisSize }, tickfont: { color: plotColors[varName], size: fontSettings.axisSize }, automargin: true };
+                layout[axisId] = { 
+                    title: plotLabels[varName] || varName, 
+                    titlefont: { color: plotColors[varName], size: fontSettings.axisSize }, 
+                    tickfont: { color: plotColors[varName], size: fontSettings.axisSize }, 
+                    automargin: true,
+                    showline: true,
+                    linewidth: 2,
+                    linecolor: plotColors[varName]
+                };
+                
                 if (idx > 0) {
                     layout[axisId].overlaying = 'y';
                     layout[axisId].side = 'right';
                     layout[axisId].position = plotDomainEnd + (idx - 1) * spacePerAxis;
                     layout[axisId].showgrid = false;
-                    layout[axisId].showline = true;
-                    layout[axisId].linewidth = 2;
-                    layout[axisId].linecolor = plotColors[varName];
+                } else {
+                    layout[axisId].showgrid = true;
                 }
             });
             
