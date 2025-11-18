@@ -69,7 +69,7 @@ The **Amount (mg)** is calculated automatically. To adjust parameters, click **�
 -   **Customize Fonts:** Click **⚙️ Font and Style Settings** to open the font editor. Change the chart title, font family, and sizes for a professional, publication-ready look.
 -   **Save or Copy:** Use the `Save as PNG` button to choose a resolution and download the image, or `Copy to Clipboard` to capture the plot exactly as you see it.
 
-<img width="603" height="524" alt="image" src="https://github.com/user-attachments/assets/fee5cfee-3631-4c05-8539-5facdbb50015" />
+<img width="603" height="524" alt="image" src="https://github.com/user-attachments/assets/c295db42-fe64-4a39-b3a8-f0e2347da091" />
 
 ## 🛠️ Built With
 
