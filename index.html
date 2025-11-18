@@ -1456,9 +1456,9 @@
                     text: fontSettings.chartTitle,
                     font: { size: fontSettings.titleSize }
                 },
-                margin: { t: 50, b: 150 },
+                margin: { t: 100, b: 150 },
                 legend: {
-                    orientation: 'h', yanchor: 'top', y: -0.3, xanchor: 'center', x: 0.5
+                    orientation: 'h', yanchor: 'top', y: -0.25, xanchor: 'center', x: 0.5
                 },
                 xaxis: {
                     title: 'Volume (mL)', domain: [0, plotDomainEnd], automargin: true,
@@ -1494,18 +1494,16 @@
             });
             
             const config = {
-                responsive: true, displayModeBar: true, displaylogo: false,
+                responsive: true, 
+                displayModeBar: true, 
+                displaylogo: false,
+                modeBarButtonsToRemove: ['select2d', 'lasso2d'],
                 modeBarButtonsToAdd: ['pan2d', 'zoom2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d'],
-                toImageButtonOptions: {
-                    format: 'png', filename: currentFileName.replace(/\.[^/.]+$/, '') + '_chromatogram',
-                    height: 800, width: 1200, scale: 2
-                }
+                toImageButtonOptions: { format: 'png', filename: currentFileName.replace(/\.[^/.]+$/, '') + '_chromatogram', height: 800, width: 1200, scale: 2 }
             };
             
             Plotly.newPlot('plotlyChart', traces, layout, config);
-            
             document.getElementById('plotlyChart').on('plotly_relayout', handleRelayout);
-
             updateStatus('Plotted ' + selectedVariables.length + ' variable(s)');
             updateIntegration();
         }
