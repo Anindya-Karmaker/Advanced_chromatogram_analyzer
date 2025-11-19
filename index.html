@@ -254,6 +254,12 @@
             overflow-y: auto;
         }
 
+        .modal-content hr {
+            margin: 25px 0;
+            border: 0;
+            border-top: 1px solid #eee;
+        }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -743,6 +749,29 @@
                     <input type="number" id="fractionFontSize" class="form-control">
                 </div>
             </div>
+            <hr>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label for="plotWidthInput">Plot Width (px):</label>
+                    <input type="number" id="plotWidthInput" placeholder="Auto (Responsive)">
+                </div>
+                <div class="form-group">
+                    <label for="plotHeightInput">Plot Height (px):</label>
+                    <input type="number" id="plotHeightInput" placeholder="Auto (Responsive)">
+                </div>
+            </div>
+            <!-- Start: Added section for offsets -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div class="form-group">
+                    <label for="regionOffsetInput">Region Label Offset:</label>
+                    <input type="number" id="regionOffsetInput" step="0.01" title="Vertical position of region labels (e.g., 1.07)">
+                </div>
+                <div class="form-group">
+                    <label for="legendOffsetInput">Legend Offset:</label>
+                    <input type="number" id="legendOffsetInput" step="0.01" title="Vertical position of the legend (e.g., -0.25)">
+                </div>
+            </div>
+             <!-- End: Added section -->
             <div class="button-group" style="margin-top: 20px;">
                 <button onclick="applyFontSettings()" class="button-success">Apply Changes</button>
                 <button onclick="closeModal('fontSettingsModal')" class="button-secondary">Close</button>
@@ -793,7 +822,7 @@
         let isRelayouting = false;
         let concentrationParams = { extCoeff: 1.0, pathLength: 0.2, mw: 1000 };
         let columnParams = { length_mm: 20 };
-        let fontSettings = { chartTitle: 'Chromatogram Analysis', family: 'Arial, sans-serif', titleSize: 18, axisSize: 14, fractionSize: 10 };
+        let fontSettings = { chartTitle: 'Chromatogram Analysis', family: 'Arial, sans-serif', titleSize: 18, axisSize: 14, fractionSize: 10, width: null, height: null, regionLabelOffset: 1.05, legendOffset: -0.25 };
         let regionData = [];
         
         const defaultColors = ['#0066CC', '#00CC66', '#CC0000', '#CC00CC', '#00CCCC', '#FF9900', '#666666', '#FF00FF'];
@@ -890,15 +919,23 @@
                     if (!sessionData.originalRawData || !sessionData.uiState) {
                         throw new Error("Invalid session file format.");
                     }
+                    
+                    // Call resetState first to ensure a clean slate
+                    resetState();
 
                     currentFileName = sessionData.fileName;
                     originalRawData = sessionData.originalRawData;
                     rawData = JSON.parse(JSON.stringify(originalRawData)); 
-                    fontSettings = sessionData.fontSettings;
-                    columnParams = sessionData.columnParams;
-                    concentrationParams = sessionData.concentrationParams;
-                    fractionData = sessionData.fractionData;
-                    regionData = sessionData.regionData;
+
+                    // FIX: Safely merge loaded settings with defaults
+                    if (sessionData.fontSettings) {
+                        fontSettings = Object.assign(fontSettings, sessionData.fontSettings);
+                    }
+                    
+                    columnParams = sessionData.columnParams || columnParams;
+                    concentrationParams = sessionData.concentrationParams || concentrationParams;
+                    fractionData = sessionData.fractionData || [];
+                    regionData = sessionData.regionData || [];
                     
                     onDataImported();
 
@@ -1172,6 +1209,10 @@
             document.getElementById('axisFontSize').value = fontSettings.axisSize;
             document.getElementById('fractionFontSize').value = fontSettings.fractionSize;
             document.getElementById('globalFontSize').value = ''; 
+            document.getElementById('plotWidthInput').value = fontSettings.width || '';
+            document.getElementById('plotHeightInput').value = fontSettings.height || '';
+            document.getElementById('regionOffsetInput').value = fontSettings.regionLabelOffset;
+            document.getElementById('legendOffsetInput').value = fontSettings.legendOffset;
             document.getElementById('fontSettingsModal').style.display = 'block';
         }
 
@@ -1181,6 +1222,17 @@
             fontSettings.titleSize = parseInt(document.getElementById('titleFontSize').value);
             fontSettings.axisSize = parseInt(document.getElementById('axisFontSize').value);
             fontSettings.fractionSize = parseInt(document.getElementById('fractionFontSize').value);
+            
+            const width = parseInt(document.getElementById('plotWidthInput').value);
+            const height = parseInt(document.getElementById('plotHeightInput').value);
+            fontSettings.width = isNaN(width) || width <= 0 ? null : width;
+            fontSettings.height = isNaN(height) || height <= 0 ? null : height;
+
+            const regionOffset = parseFloat(document.getElementById('regionOffsetInput').value);
+            const legendOffset = parseFloat(document.getElementById('legendOffsetInput').value);
+            fontSettings.regionLabelOffset = isNaN(regionOffset) ? 1.05 : regionOffset;
+            fontSettings.legendOffset = isNaN(legendOffset) ? -0.25 : legendOffset;
+
             closeModal('fontSettingsModal');
             plotGraph();
         }
@@ -1416,7 +1468,8 @@
             if (document.getElementById('showRegionsCheck').checked && regionData.length > 0) {
                 regionData.forEach(region => {
                     shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: region.start, y0: 0, x1: region.end, y1: 1, fillcolor: region.color, opacity: 0.2, line: { width: 0 }, layer: 'below' });
-                    annotations.push({ x: (region.start + region.end) / 2, y: 1.0, xref: 'x', yref: 'paper', text: `<b>${region.label}</b>`, showarrow: false, font: { size: fontSettings.axisSize, color: 'black' }, yanchor: 'bottom' });
+                    // FIX: Use the value from fontSettings for the y-position
+                    annotations.push({ x: (region.start + region.end) / 2, y: fontSettings.regionLabelOffset, xref: 'x', yref: 'paper', text: `<b>${region.label}</b>`, showarrow: false, font: { size: fontSettings.axisSize, color: 'black' }, yanchor: 'bottom' });
                     traces.push({ x: [null], y: [null], type: 'scatter', mode: 'markers', name: region.label, marker: { symbol: 'square', color: region.color, size: 15, line: { width: 1, color: '#666' } }, showlegend: true });
                 });
             }
@@ -1426,22 +1479,31 @@
             let xAxisRange = null;
             if (!isNaN(xAxisStart) && !isNaN(xAxisEnd) && xAxisStart < xAxisEnd) xAxisRange = [xAxisStart, xAxisEnd];
 
-            const container = document.querySelector('.chart-container');
-            const availableWidth = container.clientWidth - 30; 
-            const calculatedHeight = availableWidth * (9 / 16); 
-
-
             const layout = {
+                width: fontSettings.width,
+                height: fontSettings.height,
                 font: { family: fontSettings.family },
                 title: { text: fontSettings.chartTitle, font: { size: fontSettings.titleSize } },
-                margin: { t: 80, b: 150, l: 60, r: 20 },
-                legend: { orientation: 'h', yanchor: 'top', y: -0.25, xanchor: 'center', x: 0.5 },
-                xaxis: { title: 'Volume (mL)', domain: [0, plotDomainEnd], automargin: true, titlefont: { size: fontSettings.axisSize }, tickfont: { size: fontSettings.axisSize }, range: xAxisRange },
+                margin: { t: 80, b: 120, l: 60, r: 20 },
+                // FIX: Use the value from fontSettings for the legend's y-position
+                legend: { orientation: 'h', yanchor: 'top', y: fontSettings.legendOffset, xanchor: 'center', x: 0.5 },
+                xaxis: { 
+                    title: 'Volume (mL)', 
+                    domain: [0, plotDomainEnd], 
+                    automargin: true, 
+                    titlefont: { size: fontSettings.axisSize }, 
+                    tickfont: { size: fontSettings.axisSize }, 
+                    range: xAxisRange,
+                    showline: true,
+                    linewidth: 1,
+                    linecolor: 'black',
+                    mirror: true,
+                    showgrid: false,
+                    minor: { ticks: "" }
+                },
                 annotations: annotations,
                 shapes: shapes,
-                height: calculatedHeight,
                 hovermode: 'x unified'
-                // --- KEY CHANGE: The 'height' property is permanently removed ---
             };
             
             selectedVariables.forEach(function(varName, idx) {
@@ -1451,9 +1513,8 @@
                     titlefont: { color: plotColors[varName], size: fontSettings.axisSize }, 
                     tickfont: { color: plotColors[varName], size: fontSettings.axisSize }, 
                     automargin: true,
-                    showline: true,
-                    linewidth: 2,
-                    linecolor: plotColors[varName]
+                    rangemode: 'tozero', 
+                    minor: { ticks: "" }
                 };
                 
                 if (idx > 0) {
@@ -1461,8 +1522,15 @@
                     layout[axisId].side = 'right';
                     layout[axisId].position = plotDomainEnd + (idx - 1) * spacePerAxis;
                     layout[axisId].showgrid = false;
+                    layout[axisId].showline = true;
+                    layout[axisId].linewidth = 2;
+                    layout[axisId].linecolor = plotColors[varName];
                 } else {
-                    layout[axisId].showgrid = true;
+                    layout[axisId].showgrid = false;
+                    layout[axisId].showline = true;
+                    layout[axisId].linewidth = 1;
+                    layout[axisId].linecolor = plotColors[varName]; 
+                    layout[axisId].mirror = true;
                 }
             });
             
@@ -1637,7 +1705,19 @@
             
             concentrationParams = { extCoeff: 1.0, pathLength: 0.2, mw: 1000 };
             columnParams = { length_mm: 150 };
-            fontSettings.chartTitle = 'Chromatogram Analysis'; 
+            
+            // FIX: Reset the entire fontSettings object to its default state
+            fontSettings = { 
+                chartTitle: 'Chromatogram Analysis', 
+                family: 'Arial, sans-serif', 
+                titleSize: 18, 
+                axisSize: 14, 
+                fractionSize: 10, 
+                width: null, 
+                height: null, 
+                regionLabelOffset: 1.05, 
+                legendOffset: -0.25
+            };
 
             document.getElementById('colLength').value = 150;
             document.getElementById('plotCheckboxes').innerHTML = '<p style="color: #999; font-size: 13px;">Load data to see variables</p>';
