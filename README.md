@@ -64,13 +64,13 @@ Use the **📊 Plot Selection & Styling** panel to select variables and customiz
 #### 5. Calculate Concentration
 The **Amount (mg)** is calculated automatically. To adjust parameters, click **🧪 Calculate Concentration**, enter your protein's specific values, and the amount will update in real-time everywhere.
 
-<img width="798" height="662" alt="image" src="https://github.com/user-attachments/assets/50b66df9-57f3-49c5-8d80-3408d77dadf6" />
+<img width="505" height="419" alt="image" src="https://github.com/user-attachments/assets/50b66df9-57f3-49c5-8d80-3408d77dadf6" />
 
 #### 6. Fine-Tune Appearance & Export
 -   **Customize Fonts:** Click **⚙️ Font and Style Settings** to open the font editor. Change the chart title, font family, and sizes for a professional, publication-ready look.
 -   **Save or Copy:** Use the `Save as PNG` button to choose a resolution and download the image, or `Copy to Clipboard` to capture the plot exactly as you see it.
 
-<img width="596" height="828" alt="image" src="https://github.com/user-attachments/assets/2f6b32fd-3a8f-4bbc-a94b-3098ffdc902f" />
+<img width="302" height="419" alt="image" src="https://github.com/user-attachments/assets/2f6b32fd-3a8f-4bbc-a94b-3098ffdc902f" />
 
 
 ## 🛠️ Built With
