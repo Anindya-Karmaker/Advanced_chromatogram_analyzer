@@ -1416,7 +1416,7 @@
             if (document.getElementById('showRegionsCheck').checked && regionData.length > 0) {
                 regionData.forEach(region => {
                     shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: region.start, y0: 0, x1: region.end, y1: 1, fillcolor: region.color, opacity: 0.2, line: { width: 0 }, layer: 'below' });
-                    annotations.push({ x: (region.start + region.end) / 2, y: 1.025, xref: 'x', yref: 'paper', text: `<b>${region.label}</b>`, showarrow: false, font: { size: fontSettings.axisSize, color: 'black' }, yanchor: 'bottom' });
+                    annotations.push({ x: (region.start + region.end) / 2, y: 1.0, xref: 'x', yref: 'paper', text: `<b>${region.label}</b>`, showarrow: false, font: { size: fontSettings.axisSize, color: 'black' }, yanchor: 'bottom' });
                     traces.push({ x: [null], y: [null], type: 'scatter', mode: 'markers', name: region.label, marker: { symbol: 'square', color: region.color, size: 15, line: { width: 1, color: '#666' } }, showlegend: true });
                 });
             }
