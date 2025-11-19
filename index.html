@@ -34,6 +34,60 @@
             margin-bottom: 20px;
             font-size: 24px;
         }
+        
+        /* Start: Added Header Styles */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            height: 60px;
+            width: auto;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lab-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2a6db1; /* Professional blue */
+        }
+
+        .lab-subtext {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .app-title {
+            font-size: 28px;
+            color: #333;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .app-subtitle {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0 0 0;
+        }
 
         .main-grid {
             display: grid;
@@ -396,7 +450,15 @@
 </head>
 <body>
     <div class="container">
-        <h1><img src="logo.png" alt="Logo" style="height: 28px; vertical-align: middle; margin-right: 10px;"> Advanced Chromatogram Analyzer V2.0</h1>
+        <div class="app-header">
+            <div class="header-left">
+                <img src="logo.png" alt="Lab Logo" class="header-logo">
+            </div>
+            <div class="header-right">
+                <h1 class="app-title">Advanced Chromatogram Analyzer V2.0</h1>
+                <p class="app-subtitle">Interactive visualization and analysis of chromatography data.</p>
+            </div>
+        </div>
         
         <div class="main-grid">
             <div>
