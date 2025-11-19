@@ -29,17 +29,12 @@
             padding: 20px;
         }
 
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        
-        /* Start: Added Header Styles */
         .app-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column; /* Stack vertically on mobile */
+            align-items: center;    /* Center content on mobile */
+            text-align: center;     /* Center text on mobile */
+            gap: 20px;              /* Space between logo and text on mobile */
             padding-bottom: 20px;
             margin-bottom: 20px;
             border-bottom: 1px solid #eee;
@@ -59,12 +54,13 @@
         .logo-text {
             display: flex;
             flex-direction: column;
+            text-align: left; /* Keep lab name/subtext left-aligned */
         }
 
         .lab-name {
             font-size: 20px;
             font-weight: 600;
-            color: #2a6db1; /* Professional blue */
+            color: #2a6db1; 
         }
 
         .lab-subtext {
@@ -73,11 +69,11 @@
         }
 
         .header-right {
-            text-align: right;
+            /* Text alignment is handled by parent on mobile */
         }
 
         .app-title {
-            font-size: 28px;
+            font-size: 24px; /* Slightly smaller title for mobile */
             color: #333;
             margin: 0;
             font-weight: 600;
@@ -444,6 +440,19 @@
         }
         footer a:hover {
             text-decoration: underline;
+        }
+        @media (min-width: 900px) {
+            .app-header {
+                flex-direction: row; /* Side-by-side on desktop */
+                justify-content: space-between;
+                text-align: left;
+            }
+            .header-right {
+                text-align: right; /* Right-align title/subtitle on desktop */
+            }
+            .app-title {
+                font-size: 28px; /* Larger title on desktop */
+            }
         }
 
     </style>
