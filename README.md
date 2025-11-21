@@ -2,10 +2,7 @@
 
 A powerful, browser-based tool for visualizing, analyzing, and exporting chromatography data directly from ÄKTA-generated files or custom CSV/Excel sheets. No installation required.
 
-<img width="1471" height="793" alt="image" src="https://github.com/user-attachments/assets/eed13bc4-5cc9-4c74-b3ab-65c0d88bad34" />
-
-
-
+![Advanced Chromatogram Analyzer Interface](https://github.com/user-attachments/assets/eed13bc4-5cc9-4c74-b3ab-65c0d88bad34)
 
 ## 🧬 Overview
 
@@ -13,31 +10,33 @@ This tool was created for researchers who need a fast, private, and flexible way
 
 ## 🚀 Key Features
 
--   **Direct ÄKTA Import:** Natively parses tab-delimited `.txt` or `.csv` files from GE Unicorn software (tested with v7.xx).
+-   **Direct ÄKTA Import:** Natively parses tab-delimited `.txt` or `.csv` files from GE Unicorn software.
 -   **Custom Data Import:** A flexible wizard to import data from any generic CSV or Excel (`.xlsx`, `.xls`) file by mapping columns.
 -   **Save & Load Sessions:** Save your entire analysis state—including data, annotations, and all settings—into a single `.json` file. Load a session file to resume your work exactly where you left off.
 -   **Interactive Multi-Axis Plotting:**
     -   Visualize multiple variables on a single plot, each with its own y-axis.
-    -   Full control over line color, thickness, style, and custom labels.
+    -   Full control over line color, thickness, style, and custom labels, with changes reflected instantly.
+    -   Zoom and pan capabilities, with a double-click to autoscale and reset the view.
 -   **Advanced Peak Analysis:**
-    -   Visually select an integration range with draggable lines that can **snap to the nearest fraction**.
+    -   Visually select an integration range.
     -   Automatically calculates **Peak Area**, **Volume**, **Asymmetry Factor (As)**, and **HETP**.
     -   Calculations update in real-time as you adjust the integration range.
--   **Rich Annotations:**
-    -   **Fraction Management:** Automatically import, manually add, edit, or remove fractions and toggle their visibility on the plot.
-    -   **Label Regions:** Create colored, labeled regions (e.g., "Load", "Wash", "Elution") to clearly annotate different phases of the chromatogram. These regions are also editable and appear in the legend.
--   **Protein Concentration Calculator:** Uses the integrated peak area and Beer-Lambert law parameters to estimate the total protein amount in milligrams. The result is displayed directly on the main panel.
+-   **Rich Annotations & Styling:**
+    -   **Fraction Management:** Automatically import, manually add, edit, or remove fractions.
+    -   **Fraction Styling:** Customize the color, thickness, and line style (`solid`, `dot`, etc.) of fraction markers directly from the main control panel.
+    -   **Label Regions:** Create colored, labeled regions (e.g., "Load", "Wash", "Elution") to clearly annotate different phases of the chromatogram.
+-   **Protein Concentration Calculator:** Uses the integrated peak area and Beer-Lambert law parameters to estimate the total protein amount in milligrams.
 -   **Publication-Ready Exporting:**
     -   **High-Resolution PNG:** Save the plot as a PNG at **1x, 2x, or 3x resolution**.
-    -   **Full Font Customization:** A dedicated panel to control the chart title, font family, and the size of the title, axes, and annotations.
-    -   **Copy to Clipboard:** Instantly copy the plot *exactly as it appears on screen* for pasting into presentations or lab notebooks.
+    -   **Full Font & Style Customization:** A dedicated modal to control the chart title, font family, sizes, line heights, label rotation, and element offsets.
+    -   **Copy to Clipboard:** Instantly copy the plot for pasting into presentations or lab notebooks.
 -   **100% Client-Side:** Your data is processed locally in your browser. Nothing is ever uploaded to a server, ensuring complete data privacy.
 
 ## ⚙️ How to Use
 
 No installation is needed!
 
-1.  **Visit the Live Tool:** https://anindya-karmaker.github.io/Advanced_chromatogram_analyzer/
+1.  **Visit the Live Tool:** [https://anindya-karmaker.github.io/Advanced_chromatogram_analyzer/](https://anindya-karmaker.github.io/Advanced_chromatogram_analyzer/)
 2.  **Or Download:** Download the `index.html` file from this repository and open it in any modern web browser (like Chrome, Firefox, or Edge).
 
 ---
@@ -48,39 +47,33 @@ No installation is needed!
 Use the **📁 Open ÄKTA File** button for standard Unicorn exports. For other formats, use **⚙️ Custom Import**. To save your work for later, use **💾 Save Session**, or to resume a previous analysis, use **📂 Load Session**.
 
 #### 2. Customize the Plot
-Use the **📊 Plot Selection & Styling** panel to select variables and customize their appearance. You can also set the exact X-axis range here.
+Use the **📊 Plot Selection & Styling** panel. All changes here update the plot instantly.
+-   Select variables and customize their **color, line style, thickness, and label**.
+-   Toggle visibility and style of **Fractions** and **Regions**.
+-   Manually set the **X-axis range** and click **📊 Update Plot** to apply. Double-click the plot to reset the view.
 
-<img width="335" height="570" alt="image" src="https://github.com/user-attachments/assets/d791dac5-306e-4fcf-935e-f3df1bfca4fe" />
-
-
+![The main styling panel showing controls for data traces, fractions, and regions.](https://github.com/user-attachments/assets/d791dac5-306e-4fcf-935e-f3df1bfca4fe)
 
 #### 3. Annotate the Chart
--   **Manage Fractions:** Use the **🧫 Fractions** panel to add, edit, or hide fraction markers on the plot.
--   **Label Regions:** Use the **🎨 Label Regions** panel to define and color important sections like "Wash" or "Elution". These will appear as shaded areas on the plot and in the legend.
+-   **Manage Fractions:** Use the **🧫 Fractions** panel to add, edit, or hide fraction markers.
+-   **Label Regions:** Use the **🎨 Label Regions** panel to define and color important sections like "Wash" or "Elution". These appear as shaded areas and are listed in the legend.
 
 #### 4. Analyze Peaks
--   **Enter Column Parameters:** Input your column's length in millimeters.
--   **Integrate a Peak:** In the **📐 Integration & Analysis** panel, select your primary variable (usually `UV`) and use the `Start` and `End` fields to define the peak boundaries. The `Area`, `Volume`, `Asymmetry`, and `HETP` are calculated and displayed automatically.
--   **Snap to Fractions:** If fractions are visible, the Start/End values will automatically snap to the nearest fraction when you finish editing.
+-   **Enter Column Parameters:** Input your column's length in millimeters for accurate HETP calculation.
+-   **Integrate a Peak:** In the **📐 Integration & Analysis** panel, select your primary variable (usually `UV`) and use the `Start` and `End` fields to define the peak boundaries. The `Area`, `Volume`, `Asymmetry`, and `HETP` are calculated automatically.
 
-<img width="328" height="427" alt="image" src="https://github.com/user-attachments/assets/171a8ef9-7245-4f61-bd58-a36cd8294d2f" />
-
-
+![The integration panel showing real-time calculations for peak analysis.](https://github.com/user-attachments/assets/171a8ef9-7245-4f61-bd58-a36cd8294d2f)
 
 #### 5. Calculate Concentration
-The **Amount (mg)** is calculated automatically. To adjust parameters, click **🧪 Calculate Concentration**, enter your protein's specific values, and the amount will update in real-time everywhere.
+The **Amount (mg)** is calculated automatically in the integration panel. To adjust parameters, click **🧪 Calculate Concentration**, enter your protein's specific values (Ext. Coeff., Path Length, MW), and the amount will update in real-time.
 
-<img width="801" height="666" alt="image" src="https://github.com/user-attachments/assets/02a4d8ca-4b03-4610-a774-2b26bc914fc9" />
-
-
+![The concentration calculator modal for applying Beer-Lambert law parameters.](https://github.com/user-attachments/assets/02a4d8ca-4b03-4610-a774-2b26bc914fc9)
 
 #### 6. Fine-Tune Appearance & Export
--   **Customize Fonts:** Click **⚙️ Font and Style Settings** to open the font editor. Change the chart title, font family, and sizes for a professional, publication-ready look.
--   **Save or Copy:** Use the `Save as PNG` button to choose a resolution and download the image, or `Copy to Clipboard` to capture the plot exactly as you see it.
+-   **Customize Fonts & Layout:** Click **⚙️ Font and Style Settings** to open the advanced editor. Here you can change the chart title, font family, element sizes, label rotation/offsets, and fraction line height to achieve a professional, publication-ready look.
+-   **Save or Copy:** Use the `Save as PNG` button to choose a resolution and download the image, or `Copy to Clipboard` to capture the plot for quick use elsewhere.
 
-<img width="599" height="832" alt="image" src="https://github.com/user-attachments/assets/6f7e3500-b7a6-4489-959a-523fbc5b14b5" />
-
-
+![The font and style settings modal, providing deep customization for exporting.](https://github.com/user-attachments/assets/6f7e3500-b7a6-4489-959a-523fbc5b14b5)
 
 ## 🛠️ Built With
 
