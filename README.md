@@ -63,13 +63,15 @@ Use the **📊 Plot Selection & Styling** panel to select variables and customiz
 -   **Integrate a Peak:** In the **📐 Integration & Analysis** panel, select your primary variable (usually `UV`) and use the `Start` and `End` fields to define the peak boundaries. The `Area`, `Volume`, `Asymmetry`, and `HETP` are calculated and displayed automatically.
 -   **Snap to Fractions:** If fractions are visible, the Start/End values will automatically snap to the nearest fraction when you finish editing.
 
-<img width="337" height="567" alt="image" src="https://github.com/user-attachments/assets/b9bb0780-b5f2-48a4-961e-cd151709a29d" />
+<img width="328" height="427" alt="image" src="https://github.com/user-attachments/assets/171a8ef9-7245-4f61-bd58-a36cd8294d2f" />
+
 
 
 #### 5. Calculate Concentration
 The **Amount (mg)** is calculated automatically. To adjust parameters, click **🧪 Calculate Concentration**, enter your protein's specific values, and the amount will update in real-time everywhere.
 
-<img width="800" height="665" alt="image" src="https://github.com/user-attachments/assets/4a85e3d5-8eae-415e-a85f-24c6f83e7746" />
+<img width="801" height="666" alt="image" src="https://github.com/user-attachments/assets/02a4d8ca-4b03-4610-a774-2b26bc914fc9" />
+
 
 
 #### 6. Fine-Tune Appearance & Export
