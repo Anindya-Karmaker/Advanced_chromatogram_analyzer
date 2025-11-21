@@ -191,9 +191,10 @@
 
         .style-controls {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: auto 1fr auto;
             gap: 8px;
             margin-top: 5px;
+            align-items: center; 
         }
 
         .range-control {
@@ -513,11 +514,11 @@
                     <div class="range-control" style="gap: 5px;">
                         <div class="range-item">
                             <label for="xAxisStart" style="min-width: 80px;">X-axis Start:</label>
-                            <input type="number" id="xAxisStart" step="1" disabled onchange="plotGraph()">
+                            <input type="number" id="xAxisStart" step="1" disabled>
                         </div>
                         <div class="range-item">
                             <label for="xAxisEnd" style="min-width: 80px;">X-axis End:</label>
-                            <input type="number" id="xAxisEnd" step="1" disabled onchange="plotGraph()">
+                            <input type="number" id="xAxisEnd" step="1" disabled>
                         </div>
                     </div>
                     <button onclick="plotGraph()" id="plotBtn" disabled>
@@ -887,6 +888,7 @@
         let plotColors = {};
         let plotStyles = {};
         let plotLabels = {};
+        let plotWidths = {};
         let fractionData = [];
         let customParsedData = null;
         let integrationResults = { area: 0, volume: 0, start: 0, end: 0 };
@@ -956,6 +958,7 @@
                     plotLabels: plotLabels,
                     plotColors: plotColors,
                     plotStyles: plotStyles,
+                    plotWidths: plotWidths,
                     primaryVar: document.getElementById('primaryVarSelect').value,
                     integStart: document.getElementById('integStartValue').value,
                     integEnd: document.getElementById('integEndValue').value,
@@ -1027,6 +1030,7 @@
                     plotLabels = sessionData.uiState.plotLabels;
                     plotColors = sessionData.uiState.plotColors;
                     plotStyles = sessionData.uiState.plotStyles;
+                    plotWidths = sessionData.uiState.plotWidths || {};
 
                     plotGraph();
                     updateStatus(`Session loaded: ${currentFileName}`);
@@ -1244,8 +1248,24 @@
                     plotStyles[varName] = this.value;
                 };
                 
+                if (!plotWidths[varName]) {
+                    plotWidths[varName] = 2; // Default line width
+                }
+
+                const widthInput = document.createElement('input');
+                widthInput.type = 'number';
+                widthInput.value = plotWidths[varName];
+                widthInput.min = 0.5;
+                widthInput.step = 0.5;
+                widthInput.style.width = '65px'; // Set a fixed width
+                widthInput.title = 'Line Width';
+                widthInput.onchange = function() {
+                    plotWidths[varName] = parseFloat(this.value);
+                };
+                
                 styleControls.appendChild(colorInput);
                 styleControls.appendChild(styleSelect);
+                styleControls.appendChild(widthInput); // Add the new input
                 wrapper.appendChild(styleControls);
                 
                 container.appendChild(wrapper);
@@ -1460,22 +1480,21 @@
                 const data = rawData[varName];
                 if (!data || data.x.length === 0) return;
 
-                let minY = null;
-                let maxY = null;
+                // Find the maximum Y-value within the new X-axis range (xrange)
+                let maxY = -Infinity;
                 
                 for (let i = 0; i < data.x.length; i++) {
                     if (data.x[i] >= xrange[0] && data.x[i] <= xrange[1]) {
-                        const yVal = data.y[i];
-                        if (minY === null || yVal < minY) minY = yVal;
-                        if (maxY === null || yVal > maxY) maxY = yVal;
+                        if (data.y[i] > maxY) maxY = data.y[i];
                     }
                 }
                 
-                if (minY !== null && maxY !== null) {
+                if (maxY > -Infinity) {
                     const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
-                    const range = maxY - minY;
-                    const padding = range === 0 ? 0.1 : range * 0.05;
-                    updateLayout[axisId + '.range'] = [minY - padding, maxY + padding];
+                    // Add 5% padding to the top of the axis
+                    const padding = maxY === 0 ? 0.1 : maxY * 0.05;
+                    // Force the y-axis range to start at 0 and end at the calculated max + padding
+                    updateLayout[axisId + '.range'] = [0, maxY + padding];
                 }
             });
             
@@ -1515,7 +1534,7 @@
                     x: data.x, 
                     y: data.y,
                     name: plotLabels[varName] || varName, type: 'scatter', mode: 'lines',
-                    line: { color: plotColors[varName], dash: dashStyles[plotStyles[varName]], width: 2 },
+                    line: { color: plotColors[varName], dash: dashStyles[plotStyles[varName]], width: plotWidths[varName] || 2 },
                     yaxis: idx === 0 ? 'y' : 'y' + (idx + 1)
                 });
             });
@@ -1579,12 +1598,33 @@
             
             selectedVariables.forEach(function(varName, idx) {
                 const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
+                
+                // Calculate the y-axis range based on the visible x-axis data
+                let yRange = null;
+                if (xAxisRange) {
+                    const data = rawData[varName];
+                    let maxY = -Infinity;
+                    if (data && data.x) {
+                        for (let i = 0; i < data.x.length; i++) {
+                            if (data.x[i] >= xAxisRange[0] && data.x[i] <= xAxisRange[1]) {
+                                if (data.y[i] > maxY) maxY = data.y[i];
+                            }
+                        }
+                    }
+                    if (maxY > -Infinity) {
+                        const padding = maxY === 0 ? 0.1 : maxY * 0.05;
+                        yRange = [0, maxY + padding];
+                    }
+                }
+
                 layout[axisId] = { 
                     title: plotLabels[varName] || varName, 
                     titlefont: { color: plotColors[varName], size: fontSettings.axisSize }, 
                     tickfont: { color: plotColors[varName], size: fontSettings.axisSize }, 
                     automargin: true,
-                    rangemode: 'tozero', 
+                    range: yRange, // Explicitly set the calculated range
+                    rangemode: yRange ? 'normal' : 'tozero', // Fallback if no specific range is calculated
+                    zeroline: false,
                     minor: { ticks: "" }
                 };
                 
@@ -1770,6 +1810,7 @@
             plotColors = {};
             plotStyles = {};
             plotLabels = {};
+            plotWidths = {};
             fractionData = [];
             regionData = []; 
             integrationResults = { area: 0, volume: 0, start: 0, end: 0 };
