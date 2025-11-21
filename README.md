@@ -52,7 +52,8 @@ Use the **📊 Plot Selection & Styling** panel. All changes here update the plo
 -   Toggle visibility and style of **Fractions** and **Regions**.
 -   Manually set the **X-axis range** and click **📊 Update Plot** to apply. Double-click the plot to reset the view.
 
-![The main styling panel showing controls for data traces, fractions, and regions.](https://github.com/user-attachments/assets/d791dac5-306e-4fcf-935e-f3df1bfca4fe)
+<img width="327" height="783" alt="image" src="https://github.com/user-attachments/assets/82dd8dcf-2999-48a9-a941-c845176cfd29" />
+
 
 #### 3. Annotate the Chart
 -   **Manage Fractions:** Use the **🧫 Fractions** panel to add, edit, or hide fraction markers.
