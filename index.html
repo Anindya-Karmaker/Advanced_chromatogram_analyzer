@@ -167,7 +167,6 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 350px;
             overflow-y: auto;
         }
 
@@ -404,6 +403,10 @@
             font-size: 12px;
             margin-top: 0;
         }
+
+        .fraction-style-controls {
+            grid-template-columns: auto 1fr auto; /* Color, Style (flexible), Thickness */
+        }
         
         @media (max-width: 900px) {
             .main-grid {
@@ -511,16 +514,34 @@
                         <p style="color: #999; font-size: 13px;">Load data to see variables</p>
                     </div>                    
                     <hr style="margin: 15px 0;">
+                    <!-- Fraction Styling Section -->
+                    <div class="checkbox-item" style="margin-bottom: 5px;">
+                        <input type="checkbox" id="showFractionsCheck" disabled onchange="plotGraph()">
+                        <label for="showFractionsCheck" style="font-weight: bold;">Show Fractions on Plot</label>
+                    </div>
+                    <div class="style-controls fraction-style-controls">
+                        <input type="color" id="fractionLineColorInput" class="color-picker" title="Fraction Line Color" onchange="applyFractionRegionStyles()">
+                        <select id="fractionLineStyleSelect" onchange="applyFractionRegionStyles()"></select>
+                        <input type="number" id="fractionLineThicknessInput" min="0.5" step="0.5" title="Fraction Line Thickness (px)" style="width: 65px;" onchange="applyFractionRegionStyles()">
+                    </div>
+
+                    <hr style="margin: 15px 0;">
+                    <!-- Region Styling Section -->
+                    <div class="checkbox-item" style="margin-bottom: 5px;">
+                         <input type="checkbox" id="showRegionsCheck" disabled onchange="plotGraph()" checked>
+                        <label for="showRegionsCheck" style="font-weight: bold;">Show Regions on Plot</label>
+                    </div>
                     <div class="range-control" style="gap: 5px;">
                         <div class="range-item">
                             <label for="xAxisStart" style="min-width: 80px;">X-axis Start:</label>
-                            <input type="number" id="xAxisStart" step="1" disabled>
+                            <input type="number" id="xAxisStart" step="1" disabled title="Set the minimum value for the X-axis (Volume)">
                         </div>
                         <div class="range-item">
                             <label for="xAxisEnd" style="min-width: 80px;">X-axis End:</label>
-                            <input type="number" id="xAxisEnd" step="1" disabled>
+                            <input type="number" id="xAxisEnd" step="1" disabled title="Set the maximum value for the X-axis (Volume)">
                         </div>
                     </div>
+                    <hr style="margin: 15px 0;">
                     <button onclick="plotGraph()" id="plotBtn" disabled>
                         📊 Update Plot
                     </button>
@@ -583,12 +604,6 @@
                     <button onclick="openFractionManager()" id="fractionBtn" disabled>
                         📋 Manage Fractions
                     </button>
-                    <div style="margin-top: 10px;">
-                        <label style="font-size: 13px;">
-                            <input type="checkbox" id="showFractionsCheck" disabled onchange="plotGraph()">
-                            Show Fractions on Plot
-                        </label>
-                    </div>
                 </div>
 
                 <div class="control-group">
@@ -596,12 +611,6 @@
                     <button onclick="openRegionManager()" id="regionBtn" disabled>
                         📋 Manage Regions
                     </button>
-                    <div style="margin-top: 10px;">
-                        <label style="font-size: 13px;">
-                            <input type="checkbox" id="showRegionsCheck" disabled onchange="plotGraph()" checked>
-                            Show Regions on Plot
-                        </label>
-                    </div>
                 </div>
 
                 <div class="control-group">
@@ -824,6 +833,21 @@
             <hr>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
+                    <label for="fractionAngleInput">Fraction Label Angle (°):</label>
+                    <input type="number" id="fractionAngleInput" step="5" title="Rotation angle for fraction labels">
+                </div>
+                <div class="form-group">
+                    <label for="fractionYShiftInput">Fraction Label Y-Offset (px):</label>
+                    <input type="number" id="fractionYShiftInput" step="1" title="Vertical pixel offset for fraction labels">
+                </div>
+            </div>
+            <div class="form-group" style="margin-top:15px;">
+                <label for="fractionLineHeightInput">Fraction Line Height (% of Plot Area):</label>
+                <input type="number" id="fractionLineHeightInput" min="1" max="100" step="1" title="Height of fraction lines (e.g., 5 for short ticks, 100 for full height)">
+            </div>
+            <hr>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
                     <label for="plotWidthInput">Plot Width (px):</label>
                     <input type="number" id="plotWidthInput" placeholder="Auto (Responsive)">
                 </div>
@@ -895,7 +919,7 @@
         let isRelayouting = false;
         let concentrationParams = { extCoeff: 1.0, pathLength: 0.2, mw: 1000 };
         let columnParams = { length_mm: 20 };
-        let fontSettings = { chartTitle: 'Chromatogram Analysis', family: 'Arial, sans-serif', titleSize: 18, axisSize: 14, fractionSize: 10, width: null, height: null, regionLabelOffset: 1.05, legendOffset: -0.25 };
+        let fontSettings = { chartTitle: 'Chromatogram Analysis', family: 'Arial, sans-serif', titleSize: 18, axisSize: 14, fractionSize: 10, width: null, height: null, regionLabelOffset: 1.05, legendOffset: -0.25, fractionAngle: -45, fractionYShift: -10, fractionLineHeight: 1, fractionLineColor: '#808080', fractionLineThickness: 1.5, fractionLineStyle: 'dot' };
         let regionData = [];
         
         const defaultColors = ['#0066CC', '#00CC66', '#CC0000', '#CC00CC', '#00CCCC', '#FF9900', '#666666', '#FF00FF'];
@@ -994,14 +1018,12 @@
                         throw new Error("Invalid session file format.");
                     }
                     
-                    // Call resetState first to ensure a clean slate
                     resetState();
 
                     currentFileName = sessionData.fileName;
                     originalRawData = sessionData.originalRawData;
                     rawData = JSON.parse(JSON.stringify(originalRawData)); 
 
-                    // FIX: Safely merge loaded settings with defaults
                     if (sessionData.fontSettings) {
                         fontSettings = Object.assign(fontSettings, sessionData.fontSettings);
                     }
@@ -1031,6 +1053,9 @@
                     plotColors = sessionData.uiState.plotColors;
                     plotStyles = sessionData.uiState.plotStyles;
                     plotWidths = sessionData.uiState.plotWidths || {};
+                    document.getElementById('fractionLineColorInput').value = fontSettings.fractionLineColor;
+                    document.getElementById('fractionLineThicknessInput').value = fontSettings.fractionLineThickness;
+                    document.getElementById('fractionLineStyleSelect').value = fontSettings.fractionLineStyle;
 
                     plotGraph();
                     updateStatus(`Session loaded: ${currentFileName}`);
@@ -1191,6 +1216,7 @@
             document.getElementById('xAxisEnd').disabled = false;
             document.getElementById('saveSessionBtn').disabled = false; 
             
+            
             const container = document.getElementById('plotCheckboxes');
             container.innerHTML = '';
             
@@ -1206,6 +1232,7 @@
                 checkbox.id = 'check_' + varName;
                 checkbox.value = varName;
                 checkbox.checked = idx < 2;
+                checkbox.onchange = plotGraph;
                 
                 const label = document.createElement('label');
                 label.htmlFor = 'check_' + varName;
@@ -1222,6 +1249,7 @@
                 labelInput.style.marginTop = '5px';
                 labelInput.onchange = function() {
                     plotLabels[varName] = this.value;
+                    plotGraph();
                 };
                 wrapper.appendChild(labelInput);
 
@@ -1234,6 +1262,7 @@
                 colorInput.value = plotColors[varName];
                 colorInput.onchange = function() {
                     plotColors[varName] = this.value;
+                    plotGraph();
                 };
                 
                 const styleSelect = document.createElement('select');
@@ -1246,10 +1275,11 @@
                 styleSelect.value = plotStyles[varName];
                 styleSelect.onchange = function() {
                     plotStyles[varName] = this.value;
+                    plotGraph();
                 };
                 
                 if (!plotWidths[varName]) {
-                    plotWidths[varName] = 2; // Default line width
+                    plotWidths[varName] = 2; 
                 }
 
                 const widthInput = document.createElement('input');
@@ -1257,19 +1287,32 @@
                 widthInput.value = plotWidths[varName];
                 widthInput.min = 0.5;
                 widthInput.step = 0.5;
-                widthInput.style.width = '65px'; // Set a fixed width
+                widthInput.style.width = '65px'; 
                 widthInput.title = 'Line Width';
                 widthInput.onchange = function() {
                     plotWidths[varName] = parseFloat(this.value);
+                    plotGraph();
                 };
                 
                 styleControls.appendChild(colorInput);
                 styleControls.appendChild(styleSelect);
-                styleControls.appendChild(widthInput); // Add the new input
+                styleControls.appendChild(widthInput); 
                 wrapper.appendChild(styleControls);
                 
                 container.appendChild(wrapper);
             });
+
+            document.getElementById('fractionLineColorInput').value = fontSettings.fractionLineColor;
+            document.getElementById('fractionLineThicknessInput').value = fontSettings.fractionLineThickness;
+            const styleSelect = document.getElementById('fractionLineStyleSelect');
+            styleSelect.innerHTML = ''; 
+            Object.keys(dashStyles).forEach(function(style) {
+                const option = document.createElement('option');
+                option.value = style;
+                option.textContent = style.charAt(0).toUpperCase() + style.slice(1);
+                styleSelect.appendChild(option);
+            });
+            styleSelect.value = fontSettings.fractionLineStyle;
             
             const select = document.getElementById('primaryVarSelect');
             select.innerHTML = '<option value="">Select variable...</option>';
@@ -1299,6 +1342,9 @@
             document.getElementById('titleFontSize').value = fontSettings.titleSize;
             document.getElementById('axisFontSize').value = fontSettings.axisSize;
             document.getElementById('fractionFontSize').value = fontSettings.fractionSize;
+            document.getElementById('fractionAngleInput').value = fontSettings.fractionAngle;
+            document.getElementById('fractionYShiftInput').value = fontSettings.fractionYShift;
+            document.getElementById('fractionLineHeightInput').value = fontSettings.fractionLineHeight * 100;
             document.getElementById('globalFontSize').value = ''; 
             document.getElementById('plotWidthInput').value = fontSettings.width || '';
             document.getElementById('plotHeightInput').value = fontSettings.height || '';
@@ -1307,12 +1353,28 @@
             document.getElementById('fontSettingsModal').style.display = 'block';
         }
 
+        function applyFractionRegionStyles() {
+            fontSettings.fractionLineStyle = document.getElementById('fractionLineStyleSelect').value; 
+            fontSettings.fractionLineColor = document.getElementById('fractionLineColorInput').value;
+            const thickness = parseFloat(document.getElementById('fractionLineThicknessInput').value);
+            fontSettings.fractionLineThickness = isNaN(thickness) || thickness <= 0 ? 1.5 : thickness;
+            
+            plotGraph();
+        }
+
         function applyFontSettings() {
             fontSettings.chartTitle = document.getElementById('chartTitleInput').value; 
             fontSettings.family = document.getElementById('fontFamilySelect').value;
             fontSettings.titleSize = parseInt(document.getElementById('titleFontSize').value);
             fontSettings.axisSize = parseInt(document.getElementById('axisFontSize').value);
             fontSettings.fractionSize = parseInt(document.getElementById('fractionFontSize').value);
+            const angle = parseInt(document.getElementById('fractionAngleInput').value);
+            const yshift = parseInt(document.getElementById('fractionYShiftInput').value);
+            fontSettings.fractionAngle = isNaN(angle) ? -45 : angle;
+            fontSettings.fractionYShift = isNaN(yshift) ? -5 : yshift;
+            let lineHeight = parseFloat(document.getElementById('fractionLineHeightInput').value);
+            lineHeight = isNaN(lineHeight) ? 100 : lineHeight;
+            fontSettings.fractionLineHeight = Math.max(0, Math.min(1, lineHeight / 100));
             
             const width = parseInt(document.getElementById('plotWidthInput').value);
             const height = parseInt(document.getElementById('plotHeightInput').value);
@@ -1461,6 +1523,12 @@
         }
 
         function handleRelayout(eventData) {
+            if (eventData['xaxis.autorange'] === true) {
+                document.getElementById('xAxisStart').value = fullDataRange.min.toFixed(2);
+                document.getElementById('xAxisEnd').value = fullDataRange.max.toFixed(2);
+                return; 
+            }
+
             if (isRelayouting) return;
 
             const xrange = eventData['xaxis.range[0]'] ? [eventData['xaxis.range[0]'], eventData['xaxis.range[1]']] : null;
@@ -1480,7 +1548,6 @@
                 const data = rawData[varName];
                 if (!data || data.x.length === 0) return;
 
-                // Find the maximum Y-value within the new X-axis range (xrange)
                 let maxY = -Infinity;
                 
                 for (let i = 0; i < data.x.length; i++) {
@@ -1491,9 +1558,7 @@
                 
                 if (maxY > -Infinity) {
                     const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
-                    // Add 5% padding to the top of the axis
                     const padding = maxY === 0 ? 0.1 : maxY * 0.05;
-                    // Force the y-axis range to start at 0 and end at the calculated max + padding
                     updateLayout[axisId + '.range'] = [0, maxY + padding];
                 }
             });
@@ -1549,8 +1614,21 @@
             if (document.getElementById('showFractionsCheck').checked && fractionData.length > 0) {
                 fractionData.forEach(function(fraction) {
                     if (fraction.show) {
-                        traces.push({ x: [fraction.position, fraction.position], y: [0, 1], yaxis: 'y', type: 'scatter', mode: 'lines', line: { color: 'gray', dash: 'dot', width: 1.5 }, name: fraction.label, showlegend: false, hoverinfo: 'none' });
-                        annotations.push({ x: fraction.position, y: 0, xref: 'x', yref: 'paper', text: fraction.label, showarrow: false, font: { size: fontSettings.fractionSize, color: '#444' }, yanchor: 'top', yshift: -5, xanchor: 'center', textangle: -45 });
+                        shapes.push({
+                            type: 'line',
+                            xref: 'x',
+                            yref: 'paper', 
+                            x0: fraction.position,
+                            y0: 0,
+                            x1: fraction.position,
+                            y1: fontSettings.fractionLineHeight, 
+                            line: {
+                                color: fontSettings.fractionLineColor,
+                                width: fontSettings.fractionLineThickness,
+                                dash: dashStyles[fontSettings.fractionLineStyle] || 'dot'
+                            }
+                        });
+                        annotations.push({ x: fraction.position, y: 0, xref: 'x', yref: 'paper', text: fraction.label, showarrow: false, font: { size: fontSettings.fractionSize, color: '#444' }, yanchor: 'top', yshift: fontSettings.fractionYShift, xanchor: 'center', textangle: fontSettings.fractionAngle });
                     }
                 });
             }
@@ -1558,7 +1636,6 @@
             if (document.getElementById('showRegionsCheck').checked && regionData.length > 0) {
                 regionData.forEach(region => {
                     shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: region.start, y0: 0, x1: region.end, y1: 1, fillcolor: region.color, opacity: 0.2, line: { width: 0 }, layer: 'below' });
-                    // FIX: Use the value from fontSettings for the y-position
                     annotations.push({ x: (region.start + region.end) / 2, y: fontSettings.regionLabelOffset, xref: 'x', yref: 'paper', text: `<b>${region.label}</b>`, showarrow: false, font: { size: fontSettings.axisSize, color: 'black' }, yanchor: 'bottom' });
                     traces.push({ x: [null], y: [null], type: 'scatter', mode: 'markers', name: region.label, marker: { symbol: 'square', color: region.color, size: 15, line: { width: 1, color: '#666' } }, showlegend: true });
                 });
@@ -1575,7 +1652,6 @@
                 font: { family: fontSettings.family },
                 title: { text: fontSettings.chartTitle, font: { size: fontSettings.titleSize } },
                 margin: { t: 80, b: 120, l: 60, r: 20 },
-                // FIX: Use the value from fontSettings for the legend's y-position
                 legend: { orientation: 'h', yanchor: 'top', y: fontSettings.legendOffset, xanchor: 'center', x: 0.5 },
                 xaxis: { 
                     title: 'Volume (mL)', 
@@ -1599,7 +1675,6 @@
             selectedVariables.forEach(function(varName, idx) {
                 const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
                 
-                // Calculate the y-axis range based on the visible x-axis data
                 let yRange = null;
                 if (xAxisRange) {
                     const data = rawData[varName];
@@ -1622,8 +1697,8 @@
                     titlefont: { color: plotColors[varName], size: fontSettings.axisSize }, 
                     tickfont: { color: plotColors[varName], size: fontSettings.axisSize }, 
                     automargin: true,
-                    range: yRange, // Explicitly set the calculated range
-                    rangemode: yRange ? 'normal' : 'tozero', // Fallback if no specific range is calculated
+                    range: yRange, 
+                    rangemode: yRange ? 'normal' : 'tozero', 
                     zeroline: false,
                     minor: { ticks: "" }
                 };
@@ -1818,7 +1893,6 @@
             concentrationParams = { extCoeff: 1.0, pathLength: 0.2, mw: 1000 };
             columnParams = { length_mm: 150 };
             
-            // FIX: Reset the entire fontSettings object to its default state
             fontSettings = { 
                 chartTitle: 'Chromatogram Analysis', 
                 family: 'Arial, sans-serif', 
@@ -1828,7 +1902,13 @@
                 width: null, 
                 height: null, 
                 regionLabelOffset: 1.05, 
-                legendOffset: -0.25
+                legendOffset: -0.25,
+                fractionAngle: -45, 
+                fractionYShift: -10, 
+                fractionLineHeight: 1,
+                fractionLineColor: '#808080', 
+                fractionLineThickness: 1.5,
+                fractionLineStyle: 'dot'
             };
 
             document.getElementById('colLength').value = 150;
