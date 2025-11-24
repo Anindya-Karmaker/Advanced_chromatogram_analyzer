@@ -69,7 +69,7 @@ Use the **📊 Plot Selection & Styling** panel.
 Go to the **📐 Integration & Analysis** panel:
 1.  **Select Variable:** Choose `UV` (or your protein signal).
 2.  **Set Range:** Use the `Start` and `End` fields to bracket your peak.
-3.  **Baseline Subtraction:** Check **"Use UV-Baseline Corrected Data"** to subtract the baseline signal from the calculation.
+3.  **Baseline Subtraction:** Check **"Use UV-Baseline Corrected Data"** to subtract the baseline signal from the calculation (If present in the UNICORN file).
 4.  **Visualize:** Check **"Show Region"** to fill the integrated area with color.
 5.  **Results:** View real-time calculations for Area, Volume, Asymmetry, and HETP.
 
