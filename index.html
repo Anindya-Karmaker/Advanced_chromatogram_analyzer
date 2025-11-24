@@ -31,10 +31,10 @@
 
         .app-header {
             display: flex;
-            flex-direction: column; /* Stack vertically on mobile */
-            align-items: center;    /* Center content on mobile */
-            text-align: center;     /* Center text on mobile */
-            gap: 20px;              /* Space between logo and text on mobile */
+            flex-direction: column; 
+            align-items: center;    
+            text-align: center;     
+            gap: 20px;              
             padding-bottom: 20px;
             margin-bottom: 20px;
             border-bottom: 1px solid #eee;
@@ -54,7 +54,7 @@
         .logo-text {
             display: flex;
             flex-direction: column;
-            text-align: left; /* Keep lab name/subtext left-aligned */
+            text-align: left; 
         }
 
         .lab-name {
@@ -69,11 +69,10 @@
         }
 
         .header-right {
-            /* Text alignment is handled by parent on mobile */
         }
 
         .app-title {
-            font-size: 24px; /* Slightly smaller title for mobile */
+            font-size: 24px; 
             color: #333;
             margin: 0;
             font-weight: 600;
@@ -405,7 +404,7 @@
         }
 
         .fraction-style-controls {
-            grid-template-columns: auto 1fr auto; /* Color, Style (flexible), Thickness */
+            grid-template-columns: auto 1fr auto; 
         }
         
         @media (max-width: 900px) {
@@ -447,15 +446,15 @@
         }
         @media (min-width: 900px) {
             .app-header {
-                flex-direction: row; /* Side-by-side on desktop */
+                flex-direction: row; 
                 justify-content: space-between;
                 text-align: left;
             }
             .header-right {
-                text-align: right; /* Right-align title/subtitle on desktop */
+                text-align: right; 
             }
             .app-title {
-                font-size: 28px; /* Larger title on desktop */
+                font-size: 28px; 
             }
         }
 
@@ -468,7 +467,7 @@
                 <img src="logo.png" alt="Lab Logo" class="header-logo">
             </div>
             <div class="header-right">
-                <h1 class="app-title">Advanced Chromatogram Analyzer V2.0</h1>
+                <h1 class="app-title">Advanced Chromatogram Analyzer V3.0</h1>
                 <p class="app-subtitle">Interactive visualization and analysis of chromatography data.</p>
             </div>
         </div>
@@ -568,6 +567,12 @@
                             <option value="">Select variable...</option>
                         </select>
                     </div>
+                    
+                    <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" id="useBaselineCutCheck" onchange="updateIntegration(); plotGraph();" disabled>
+                        <label for="useBaselineCutCheck" style="cursor: pointer; font-size: 13px;">Use UV-Baseline Corrected Data</label>
+                    </div>
+
                     <div class="range-control">
                         <div class="range-item">
                             <label>Start:</label>
@@ -578,21 +583,41 @@
                             <input type="number" id="integEndValue" value="0" step="0.1" disabled>
                         </div>
                     </div>
+                    
                     <div style="margin-top: 10px;">
-                        <label style="font-size: 13px; cursor: pointer;">
+                        <label style="font-size: 13px; cursor: pointer; display: block; margin-bottom: 5px;">
                             <input type="checkbox" id="showIntegrationLinesCheck" disabled onchange="plotGraph()">
                             Show Integration Lines
                         </label>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <!-- NEW: Show Region Checkbox (Default Off) -->
+                            <label style="font-size: 13px; cursor: pointer;">
+                                <input type="checkbox" id="showIntegRegionCheck" disabled onchange="plotGraph()">
+                                Show Region
+                            </label>
+                            
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <label style="font-size: 12px;">Color:</label>
+                                <input type="color" id="integFillColor" value="#cccccc" style="width: 40px; height: 25px; border: 1px solid #ddd; padding: 0;" onchange="plotGraph()" title="Region Fill Color">
+                            </div>
+                        </div>
                     </div>
+                    
+
+                    
+
                     <div class="integration-info" id="integrationInfo">
-                        <div><strong>Area:</strong> <span id="integAreaVal">-</span></div>
+                        <div><strong>Asymmetry (As):</strong> <span id="integAsymmetryVal">-</span></div>
+                        <div><strong>HETP:</strong> <span id="integHETPVal">-</span></div>
+                        <div id="concWarning" style="color: #dc3545; font-size: 12px; display: none; margin-top: 8px; padding: 5px; background: #ffe6e6; border-radius: 4px;">
+                        ⚠️ Concentration calculation requires UV data.
+                        </div>
+                        <div style="border-top: 1px solid #ddd; margin-top: 5px; padding-top: 5px;"><strong>Area:</strong> <span id="integAreaVal">-</span></div>
                         <div><strong>Volume:</strong> <span id="integVolumeVal">-</span></div>
                         <div><strong>Range:</strong> <span id="integRangeVal">-</span></div>
                         <div><strong>Amount:</strong> <span id="integAmountVal">-</span></div>
-                        <div style="border-top: 1px solid #ddd; margin-top: 5px; padding-top: 5px;">
-                            <strong>Asymmetry (As):</strong> <span id="integAsymmetryVal">-</span>
-                        </div>
-                        <div><strong>HETP:</strong> <span id="integHETPVal">-</span></div>
+                        
                     </div>
                     <button onclick="openConcentrationCalculator()" id="calcBtn" disabled class="button-success">
                         🧪 Calculate Concentration
@@ -625,6 +650,25 @@
                         📋 Copy to Clipboard
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="baselineModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Negative UV Values Detected</h2>
+                <!-- No close button here, user must choose an option -->
+            </div>
+            <div style="padding: 10px 0;">
+                <p>The imported file contains negative UV values (Minimum: <span id="minUVDisplay" style="font-weight:bold; color:#dc3545;"></span> mAU).</p>
+                <p style="margin-top: 10px; color: #555;">Do you want to shift the baseline to zero?</p>
+                <p style="font-size: 12px; color: #777;">This will add <strong><span id="offsetDisplay"></span></strong> to all UV and UV-Baseline Corrected values.</p>
+            </div>
+            
+            <div class="button-group" style="margin-top: 20px;">
+                <button onclick="handleBaselineCorrection(true)" class="button-success">Yes, Zero Baseline</button>
+                <button onclick="handleBaselineCorrection(false)" class="button-secondary">No, Keep Original</button>
             </div>
         </div>
     </div>
@@ -856,7 +900,6 @@
                     <input type="number" id="plotHeightInput" placeholder="Auto (Responsive)">
                 </div>
             </div>
-            <!-- Start: Added section for offsets -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
                 <div class="form-group">
                     <label for="regionOffsetInput">Region Label Offset:</label>
@@ -867,7 +910,33 @@
                     <input type="number" id="legendOffsetInput" step="0.01" title="Vertical position of the legend (e.g., -0.25)">
                 </div>
             </div>
-             <!-- End: Added section -->
+            
+            <!-- NEW SECTION: Axis Minor Ticks -->
+            <hr>
+            <h3 style="font-size: 14px; color: #555; font-weight: 600; margin-bottom: 15px;">Axis Minor Ticks</h3>
+            
+            <!-- Improved Layout Container -->
+            <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
+                
+                <!-- Checkboxes -->
+                <div class="checkbox-item" style="margin: 0;">
+                    <input type="checkbox" id="showMinorXCheck">
+                    <label for="showMinorXCheck" style="margin: 0;">Show X-Axis Ticks</label>
+                </div>
+
+                <div class="checkbox-item" style="margin: 0;">
+                    <input type="checkbox" id="showMinorYCheck">
+                    <label for="showMinorYCheck" style="margin: 0;">Show Y-Axis Ticks</label>
+                </div>
+
+                <!-- Tick Length Input (Grouped Horizontally) -->
+                <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+                    <label for="minorTickLenInput" style="margin: 0; white-space: nowrap;">Tick Length (px):</label>
+                    <input type="number" id="minorTickLenInput" min="1" max="20" step="1" style="width: 80px;">
+                </div>
+
+            </div>
+
             <div class="button-group" style="margin-top: 20px;">
                 <button onclick="applyFontSettings()" class="button-success">Apply Changes</button>
                 <button onclick="closeModal('fontSettingsModal')" class="button-secondary">Close</button>
@@ -919,8 +988,28 @@
         let isRelayouting = false;
         let concentrationParams = { extCoeff: 1.0, pathLength: 0.2, mw: 1000 };
         let columnParams = { length_mm: 20 };
-        let fontSettings = { chartTitle: 'Chromatogram Analysis', family: 'Arial, sans-serif', titleSize: 18, axisSize: 14, fractionSize: 10, width: null, height: null, regionLabelOffset: 1.05, legendOffset: -0.25, fractionAngle: -45, fractionYShift: -10, fractionLineHeight: 1, fractionLineColor: '#808080', fractionLineThickness: 1.5, fractionLineStyle: 'dot' };
+        let fontSettings = { 
+            chartTitle: 'Chromatogram Analysis', 
+            family: 'Arial, sans-serif', 
+            titleSize: 18, 
+            axisSize: 14, 
+            fractionSize: 10, 
+            width: null, 
+            height: null, 
+            regionLabelOffset: 1.05, 
+            legendOffset: -0.25, 
+            fractionAngle: -45, 
+            fractionYShift: -10, 
+            fractionLineHeight: 1, 
+            fractionLineColor: '#808080', 
+            fractionLineThickness: 1.5, 
+            fractionLineStyle: 'dot',
+            showMinorTicksX: false,
+            showMinorTicksY: false,
+            minorTickLength: 2
+        };
         let regionData = [];
+        let pendingBaselineOffset = 0; 
         
         const defaultColors = ['#0066CC', '#00CC66', '#CC0000', '#CC00CC', '#00CCCC', '#FF9900', '#666666', '#FF00FF'];
         const dashStyles = {
@@ -933,6 +1022,8 @@
         document.getElementById('fileInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (!file) return;
+            
+            event.target.value = '';
             
             currentFileName = file.name;
             updateStatus('Loading: ' + file.name + '...');
@@ -962,14 +1053,11 @@
 
             const plotCheckboxesState = [];
             document.querySelectorAll('#plotCheckboxes .checkbox-item input[type="checkbox"]').forEach(cb => {
-                plotCheckboxesState.push({
-                    name: cb.value,
-                    checked: cb.checked
-                });
+                plotCheckboxesState.push({ name: cb.value, checked: cb.checked });
             });
 
             const sessionData = {
-                version: '1.5',
+                version: '3.0', 
                 fileName: currentFileName,
                 originalRawData: originalRawData,
                 fontSettings: fontSettings,
@@ -990,10 +1078,13 @@
                     xAxisEnd: document.getElementById('xAxisEnd').value,
                     showFractions: document.getElementById('showFractionsCheck').checked,
                     showRegions: document.getElementById('showRegionsCheck').checked,
-                    showIntegrationLines: document.getElementById('showIntegrationLinesCheck').checked
+                    showIntegrationLines: document.getElementById('showIntegrationLinesCheck').checked,
+                    showIntegRegion: document.getElementById('showIntegRegionCheck').checked,
+                    integFillColor: document.getElementById('integFillColor').value,
+                    useBaselineCut: document.getElementById('useBaselineCutCheck').checked,
+                    integFillColor: document.getElementById('integFillColor').value
                 }
             };
-
             const jsonString = JSON.stringify(sessionData, null, 2);
             const blob = new Blob([jsonString], { type: 'application/json' });
             const link = document.createElement('a');
@@ -1009,6 +1100,8 @@
             const file = event.target.files[0];
             if (!file) return;
 
+            event.target.value = '';
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
@@ -1021,11 +1114,12 @@
                     resetState();
 
                     currentFileName = sessionData.fileName;
+                    
                     originalRawData = sessionData.originalRawData;
                     rawData = JSON.parse(JSON.stringify(originalRawData)); 
 
                     if (sessionData.fontSettings) {
-                        fontSettings = Object.assign(fontSettings, sessionData.fontSettings);
+                        fontSettings = Object.assign({}, fontSettings, sessionData.fontSettings);
                     }
                     
                     columnParams = sessionData.columnParams || columnParams;
@@ -1033,26 +1127,64 @@
                     fractionData = sessionData.fractionData || [];
                     regionData = sessionData.regionData || [];
                     
+                    plotLabels = {}; 
+                    
                     onDataImported();
 
                     document.getElementById('colLength').value = columnParams.length_mm;
-                    document.getElementById('primaryVarSelect').value = sessionData.uiState.primaryVar;
+                    
+                    if (sessionData.uiState.primaryVar) document.getElementById('primaryVarSelect').value = sessionData.uiState.primaryVar;
                     document.getElementById('integStartValue').value = sessionData.uiState.integStart;
                     document.getElementById('integEndValue').value = sessionData.uiState.integEnd;
                     document.getElementById('xAxisStart').value = sessionData.uiState.xAxisStart;
                     document.getElementById('xAxisEnd').value = sessionData.uiState.xAxisEnd;
+                    
                     document.getElementById('showFractionsCheck').checked = sessionData.uiState.showFractions;
                     document.getElementById('showRegionsCheck').checked = sessionData.uiState.showRegions;
                     document.getElementById('showIntegrationLinesCheck').checked = sessionData.uiState.showIntegrationLines;
 
-                    sessionData.uiState.plotCheckboxes.forEach(state => {
-                        const checkbox = document.getElementById(`check_${state.name}`);
-                        if (checkbox) checkbox.checked = state.checked;
-                    });
-                    plotLabels = sessionData.uiState.plotLabels;
-                    plotColors = sessionData.uiState.plotColors;
-                    plotStyles = sessionData.uiState.plotStyles;
-                    plotWidths = sessionData.uiState.plotWidths || {};
+                    if (sessionData.uiState.showIntegRegion !== undefined) {
+                        document.getElementById('showIntegRegionCheck').checked = sessionData.uiState.showIntegRegion;
+                    }
+                    
+                    if (sessionData.uiState.useBaselineCut !== undefined) {
+                        const cb = document.getElementById('useBaselineCutCheck');
+                        if (!cb.disabled) cb.checked = sessionData.uiState.useBaselineCut;
+                    }
+                    
+                    if (sessionData.uiState.integFillColor) {
+                        document.getElementById('integFillColor').value = sessionData.uiState.integFillColor;
+                    }
+
+                    if (sessionData.uiState.plotCheckboxes) {
+                        sessionData.uiState.plotCheckboxes.forEach(state => {
+                            const checkbox = document.getElementById(`check_${state.name}`);
+                            if (checkbox) checkbox.checked = state.checked;
+                        });
+                    }
+
+                    if (sessionData.uiState.plotLabels) {
+                        plotLabels = sessionData.uiState.plotLabels;
+                        Object.keys(plotLabels).forEach(varName => {
+                             const checkbox = document.getElementById(`check_${varName}`);
+                             if (checkbox) {
+                                 const wrapper = checkbox.parentElement.parentElement;
+                                 const inputs = wrapper.getElementsByTagName('input');
+                                 for(let inp of inputs) {
+                                     if(inp.type === 'text') {
+                                         inp.value = plotLabels[varName];
+                                         const labelTag = checkbox.nextElementSibling;
+                                         if(labelTag) labelTag.textContent = plotLabels[varName];
+                                     }
+                                 }
+                             }
+                        });
+                    }
+
+                    plotColors = sessionData.uiState.plotColors || {};
+                    plotStyles = sessionData.uiState.plotStyles || {};
+                    plotWidths = sessionData.uiState.plotWidths || {}; 
+                    
                     document.getElementById('fractionLineColorInput').value = fontSettings.fractionLineColor;
                     document.getElementById('fractionLineThicknessInput').value = fontSettings.fractionLineThickness;
                     document.getElementById('fractionLineStyleSelect').value = fontSettings.fractionLineStyle;
@@ -1062,9 +1194,7 @@
 
                 } catch (error) {
                     console.error("Error loading session:", error);
-                    alert("Failed to load session file. It may be corrupt or in an invalid format.");
-                } finally {
-                    event.target.value = '';
+                    alert("Failed to load session file: " + error.message);
                 }
             };
             reader.readAsText(file);
@@ -1073,17 +1203,29 @@
         function processAktaFile(data) {
             resetState(); 
             try {
-                if (data.length < 3) {
+                if (data.length < 4) {
                     updateStatus('Error: File has too few rows');
                     return;
                 }
+
                 const headers = data[1] || [];
-                const dataRows = data.slice(2);
+                const units = data[2] || [];   
+                const dataRows = data.slice(3); 
                 
                 const columnMap = [
-                    { pattern: 'UV', name: 'UV' }, { pattern: 'ph', name: 'pH', caseSensitive: false },
-                    { pattern: 'Cond', name: 'Conductivity' }, { pattern: 'Conc', name: 'Gradient' },
-                    { pattern: 'flow', name: 'Flow rate', caseSensitive: false }, { pattern: 'pressure', name: 'System Pressure', caseSensitive: false },
+                    { pattern: 'UV', name: 'UV' }, 
+                    { pattern: 'ph', name: 'pH', caseSensitive: false },
+                    { pattern: 'Cond', name: 'Conductivity' }, 
+                    { pattern: 'Conc', name: 'Gradient' },
+                    { pattern: 'UV_CUT', name: 'UV (Baseline Corrected)' },
+                    { pattern: '% Cond', name: '% Conductivity' },
+                    { pattern: 'Cond temp', name: 'Conductivity Temp' },
+                    { pattern: 'System pressure', name: 'System Pressure', caseSensitive: false },
+                    { pattern: 'PreC', name: 'Pre-Column Pressure' },
+                    { pattern: 'System flow', name: 'Flow Rate' },
+                    { pattern: 'linear flow', name: 'Linear Flow' },
+                    { pattern: 'CV/h', name: 'Flow Rate (CV/h)' },
+                    { pattern: 'path length', name: 'Path Length' },
                     { pattern: 'Fraction', name: 'Fraction' }
                 ];
                 
@@ -1097,7 +1239,12 @@
                                 if (!isNaN(pos) && row[idx + 1]) fractionData.push({ position: pos, label: row[idx + 1], show: true });
                             });
                         } else {
-                            originalRawData[mapping.name] = { x: [], y: [] };
+                            const unitString = units[idx + 1] ? units[idx + 1].trim() : ''; 
+                            const labelWithUnit = unitString ? `${mapping.name} (${unitString})` : mapping.name;
+                            plotLabels[mapping.name] = labelWithUnit;
+
+                            originalRawData[mapping.name] = { x: [], y: [], unit: unitString };
+                            
                             dataRows.forEach(row => {
                                 const x = parseFloat(row[idx]);
                                 const y = parseFloat(row[idx+1]);
@@ -1116,13 +1263,57 @@
                     updateStatus('Error: No valid data found in file');
                     return;
                 }
-                
-                rawData = JSON.parse(JSON.stringify(originalRawData));
-                onDataImported();
+
+                if (originalRawData['UV']) {
+                    let minUV = Infinity;
+                    const yData = originalRawData['UV'].y;
+                    for(let i=0; i<yData.length; i++) {
+                        if(yData[i] < minUV) minUV = yData[i];
+                    }
+
+                    if (minUV < 0) {
+                        pendingBaselineOffset = Math.abs(minUV);
+                        document.getElementById('minUVDisplay').textContent = minUV.toFixed(3);
+                        document.getElementById('offsetDisplay').textContent = "+" + pendingBaselineOffset.toFixed(3);
+                        document.getElementById('baselineModal').style.display = 'block';
+                        return; 
+                    }
+                }
+
+                finalizeDataLoad();
                 
             } catch (error) {
                 updateStatus('Error processing file: ' + error.message);
             }
+        }
+        function handleBaselineCorrection(shouldCorrect) {
+            document.getElementById('baselineModal').style.display = 'none';
+
+            if (shouldCorrect && pendingBaselineOffset > 0) {
+                if (originalRawData['UV']) {
+                    const yData = originalRawData['UV'].y;
+                    for (let i = 0; i < yData.length; i++) {
+                        yData[i] = yData[i] + pendingBaselineOffset;
+                    }
+                }
+
+                if (originalRawData['UV (Baseline Corrected)']) {
+                    const yDataCut = originalRawData['UV (Baseline Corrected)'].y;
+                    for (let i = 0; i < yDataCut.length; i++) {
+                        yDataCut[i] = yDataCut[i] + pendingBaselineOffset;
+                    }
+                }
+                updateStatus('Baseline zeroed (Offset: +' + pendingBaselineOffset.toFixed(3) + ')');
+            } else {
+                updateStatus('Original baseline preserved.');
+            }
+
+            finalizeDataLoad();
+        }
+
+        function finalizeDataLoad() {
+            rawData = JSON.parse(JSON.stringify(originalRawData));
+            onDataImported();
         }
 
         function importCustomData() {
@@ -1132,13 +1323,14 @@
             const headerRow = parseInt(document.getElementById('headerRowInput').value);
             const dataRows = customParsedData.slice(headerRow + 1);
             
-            const variables = ['UV', 'pH', 'Conductivity', 'Gradient', 'Flow rate', 'System Pressure'];
+            const variables = ['UV', 'pH', 'Conductivity', 'Gradient', 'Flow rate', 'System Pressure', 'Pre-Column Pressure', 'Temperature'];
             
             variables.forEach(varName => {
-                const xIdx = document.getElementById(`x_${varName}`).value;
-                const yIdx = document.getElementById(`y_${varName}`).value;
+                const xIdx = document.getElementById(`x_${varName}`) ? document.getElementById(`x_${varName}`).value : '';
+                const yIdx = document.getElementById(`y_${varName}`) ? document.getElementById(`y_${varName}`).value : '';
+                
                 if (xIdx !== '' && yIdx !== '') {
-                    originalRawData[varName] = { x: [], y: [] };
+                    originalRawData[varName] = { x: [], y: [], unit: '' }; 
                     dataRows.forEach(row => {
                         const x = parseFloat(row[xIdx]);
                         const y = parseFloat(row[yIdx]);
@@ -1188,17 +1380,15 @@
             document.getElementById('xAxisStart').value = fullDataRange.min.toFixed(2);
             document.getElementById('xAxisEnd').value = fullDataRange.max.toFixed(2);
 
-            plotLabels = {};
             Object.keys(rawData).forEach(function(varName, idx) {
-                plotLabels[varName] = varName;
-                if (!plotColors[varName]) {
-                    plotColors[varName] = defaultColors[idx % defaultColors.length];
+                if (!plotLabels[varName]) {
+                    const unit = rawData[varName].unit || '';
+                    plotLabels[varName] = unit ? `${varName} (${unit})` : varName;
                 }
-                if (!plotStyles[varName]) {
-                    plotStyles[varName] = 'solid';
-                }
+                if (!plotColors[varName]) plotColors[varName] = defaultColors[idx % defaultColors.length];
+                if (!plotStyles[varName]) plotStyles[varName] = 'solid';
             });
-            
+
             document.getElementById('plotBtn').disabled = false;
             document.getElementById('primaryVarSelect').disabled = false;
             document.getElementById('integStartValue').disabled = false;
@@ -1210,34 +1400,38 @@
             document.getElementById('fractionBtn').disabled = false;
             document.getElementById('showFractionsCheck').disabled = false;
             document.getElementById('showIntegrationLinesCheck').disabled = false;
+            document.getElementById('showIntegRegionCheck').disabled = false;
             document.getElementById('regionBtn').disabled = false;
             document.getElementById('showRegionsCheck').disabled = false;
             document.getElementById('xAxisStart').disabled = false;
             document.getElementById('xAxisEnd').disabled = false;
-            document.getElementById('saveSessionBtn').disabled = false; 
+            document.getElementById('saveSessionBtn').disabled = false;
             
-            
+            const cutVarName = 'UV (Baseline Corrected)';
+            const hasBaselineCut = rawData.hasOwnProperty(cutVarName);
+            const baselineCheck = document.getElementById('useBaselineCutCheck');
+            baselineCheck.disabled = !hasBaselineCut;
+            if (!hasBaselineCut) baselineCheck.checked = false;
+
             const container = document.getElementById('plotCheckboxes');
             container.innerHTML = '';
             
             Object.keys(rawData).forEach(function(varName, idx) {
                 const wrapper = document.createElement('div');
                 wrapper.style.marginBottom = '10px';
-                
                 const checkDiv = document.createElement('div');
                 checkDiv.className = 'checkbox-item';
-                
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.id = 'check_' + varName;
                 checkbox.value = varName;
-                checkbox.checked = idx < 2;
+                const lowerName = varName.toLowerCase();
+                const isPriority = lowerName.includes('uv') || lowerName.includes('cond') || lowerName.includes('conc') || lowerName.includes('gradient');
+                checkbox.checked = isPriority && idx < 4; 
                 checkbox.onchange = plotGraph;
-                
                 const label = document.createElement('label');
                 label.htmlFor = 'check_' + varName;
-                label.textContent = varName;
-                
+                label.textContent = plotLabels[varName]; 
                 checkDiv.appendChild(checkbox);
                 checkDiv.appendChild(label);
                 wrapper.appendChild(checkDiv);
@@ -1249,22 +1443,18 @@
                 labelInput.style.marginTop = '5px';
                 labelInput.onchange = function() {
                     plotLabels[varName] = this.value;
+                    label.textContent = this.value;
                     plotGraph();
                 };
                 wrapper.appendChild(labelInput);
 
                 const styleControls = document.createElement('div');
                 styleControls.className = 'style-controls';
-                
                 const colorInput = document.createElement('input');
                 colorInput.type = 'color';
                 colorInput.className = 'color-picker';
                 colorInput.value = plotColors[varName];
-                colorInput.onchange = function() {
-                    plotColors[varName] = this.value;
-                    plotGraph();
-                };
-                
+                colorInput.onchange = function() { plotColors[varName] = this.value; plotGraph(); };
                 const styleSelect = document.createElement('select');
                 Object.keys(dashStyles).forEach(function(style) {
                     const option = document.createElement('option');
@@ -1273,32 +1463,19 @@
                     styleSelect.appendChild(option);
                 });
                 styleSelect.value = plotStyles[varName];
-                styleSelect.onchange = function() {
-                    plotStyles[varName] = this.value;
-                    plotGraph();
-                };
-                
-                if (!plotWidths[varName]) {
-                    plotWidths[varName] = 2; 
-                }
-
+                styleSelect.onchange = function() { plotStyles[varName] = this.value; plotGraph(); };
+                if (!plotWidths[varName]) plotWidths[varName] = 2; 
                 const widthInput = document.createElement('input');
                 widthInput.type = 'number';
                 widthInput.value = plotWidths[varName];
                 widthInput.min = 0.5;
                 widthInput.step = 0.5;
                 widthInput.style.width = '65px'; 
-                widthInput.title = 'Line Width';
-                widthInput.onchange = function() {
-                    plotWidths[varName] = parseFloat(this.value);
-                    plotGraph();
-                };
-                
+                widthInput.onchange = function() { plotWidths[varName] = parseFloat(this.value); plotGraph(); };
                 styleControls.appendChild(colorInput);
                 styleControls.appendChild(styleSelect);
                 styleControls.appendChild(widthInput); 
                 wrapper.appendChild(styleControls);
-                
                 container.appendChild(wrapper);
             });
 
@@ -1319,12 +1496,14 @@
             Object.keys(rawData).forEach(function(varName) {
                 const option = document.createElement('option');
                 option.value = varName;
-                option.textContent = varName;
+                option.textContent = plotLabels[varName]; 
                 select.appendChild(option);
             });
             
             if (rawData['UV']) {
                 select.value = 'UV';
+            } else if (Object.keys(rawData).length > 0) {
+                 select.value = Object.keys(rawData)[0];
             }
             
             setupIntegrationInputs();
@@ -1350,6 +1529,11 @@
             document.getElementById('plotHeightInput').value = fontSettings.height || '';
             document.getElementById('regionOffsetInput').value = fontSettings.regionLabelOffset;
             document.getElementById('legendOffsetInput').value = fontSettings.legendOffset;
+            
+            document.getElementById('showMinorXCheck').checked = fontSettings.showMinorTicksX;
+            document.getElementById('showMinorYCheck').checked = fontSettings.showMinorTicksY;
+            document.getElementById('minorTickLenInput').value = fontSettings.minorTickLength;
+
             document.getElementById('fontSettingsModal').style.display = 'block';
         }
 
@@ -1385,6 +1569,11 @@
             const legendOffset = parseFloat(document.getElementById('legendOffsetInput').value);
             fontSettings.regionLabelOffset = isNaN(regionOffset) ? 1.05 : regionOffset;
             fontSettings.legendOffset = isNaN(legendOffset) ? -0.25 : legendOffset;
+
+            fontSettings.showMinorTicksX = document.getElementById('showMinorXCheck').checked;
+            fontSettings.showMinorTicksY = document.getElementById('showMinorYCheck').checked;
+            const tickLen = parseInt(document.getElementById('minorTickLenInput').value);
+            fontSettings.minorTickLength = isNaN(tickLen) ? 4 : tickLen;
 
             closeModal('fontSettingsModal');
             plotGraph();
@@ -1508,63 +1697,103 @@
             const primaryVar = document.getElementById('primaryVarSelect').value;
             if (!primaryVar || !rawData[primaryVar]) return;
             
-            const data = rawData[primaryVar];
-            const min = Math.min.apply(null, data.x);
-            const max = Math.max.apply(null, data.x);
-            const range = max - min;
+            const currentStart = parseFloat(document.getElementById('integStartValue').value);
+            const currentEnd = parseFloat(document.getElementById('integEndValue').value);
             
-            const start = min + range * 0.25;
-            const end = min + range * 0.75;
-            
-            document.getElementById('integStartValue').value = start.toFixed(2);
-            document.getElementById('integEndValue').value = end.toFixed(2);
+            if (isNaN(currentStart) || isNaN(currentEnd) || (currentStart === 0 && currentEnd === 0)) {
+                const data = rawData[primaryVar];
+                const min = Math.min.apply(null, data.x);
+                const max = Math.max.apply(null, data.x);
+                const range = max - min;
+                
+                const start = min + range * 0.25;
+                const end = min + range * 0.75;
+                
+                document.getElementById('integStartValue').value = start.toFixed(2);
+                document.getElementById('integEndValue').value = end.toFixed(2);
+            }
             
             updateIntegration();
+            plotGraph();
         }
 
         function handleRelayout(eventData) {
             if (eventData['xaxis.autorange'] === true) {
                 document.getElementById('xAxisStart').value = fullDataRange.min.toFixed(2);
                 document.getElementById('xAxisEnd').value = fullDataRange.max.toFixed(2);
+                
+                plotGraph();
                 return; 
             }
 
             if (isRelayouting) return;
 
-            const xrange = eventData['xaxis.range[0]'] ? [eventData['xaxis.range[0]'], eventData['xaxis.range[1]']] : null;
-            
-            if (xrange) {
-                document.getElementById('xAxisStart').value = xrange[0].toFixed(2);
-                document.getElementById('xAxisEnd').value = xrange[1].toFixed(2);
+            let xStart, xEnd;
+            if (eventData['xaxis.range'] && Array.isArray(eventData['xaxis.range'])) {
+                xStart = eventData['xaxis.range'][0];
+                xEnd = eventData['xaxis.range'][1];
+            } else if (eventData['xaxis.range[0]'] !== undefined) {
+                xStart = eventData['xaxis.range[0]'];
+                xEnd = eventData['xaxis.range[1]'];
             }
 
-            if (!xrange) return;
+            if (xStart === undefined || xEnd === undefined) return;
+
+            document.getElementById('xAxisStart').value = xStart.toFixed(2);
+            document.getElementById('xAxisEnd').value = xEnd.toFixed(2);
 
             isRelayouting = true; 
 
-            const updateLayout = {};
+            const uvVarName = 'UV';
+            const uvCutVarName = 'UV (Baseline Corrected)';
+            let masterUVRange = null;
             
+            if (selectedVariables.includes(uvVarName)) {
+                const data = rawData[uvVarName];
+                if (data && data.x) {
+                    let maxUVY = -Infinity;
+                    for (let i = 0; i < data.x.length; i++) {
+                        if (data.x[i] >= xStart && data.x[i] <= xEnd) {
+                            if (data.y[i] > maxUVY) maxUVY = data.y[i];
+                        }
+                    }
+                    if (Number.isFinite(maxUVY) && maxUVY > -Infinity) {
+                        const padding = maxUVY === 0 ? 0.1 : Math.abs(maxUVY) * 0.05;
+                        masterUVRange = [0, maxUVY + padding];
+                    }
+                }
+            }
+
+            const updateLayout = {};
+
             selectedVariables.forEach(function(varName, idx) {
+                const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
+                
+                if (varName === uvCutVarName && masterUVRange) {
+                    updateLayout[axisId + '.range'] = masterUVRange;
+                    return; 
+                }
+
                 const data = rawData[varName];
                 if (!data || data.x.length === 0) return;
 
                 let maxY = -Infinity;
-                
                 for (let i = 0; i < data.x.length; i++) {
-                    if (data.x[i] >= xrange[0] && data.x[i] <= xrange[1]) {
+                    if (data.x[i] >= xStart && data.x[i] <= xEnd) {
                         if (data.y[i] > maxY) maxY = data.y[i];
                     }
                 }
                 
-                if (maxY > -Infinity) {
-                    const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
-                    const padding = maxY === 0 ? 0.1 : maxY * 0.05;
+                if (Number.isFinite(maxY) && maxY > -Infinity) {
+                    const padding = maxY === 0 ? 0.1 : Math.abs(maxY) * 0.05;
                     updateLayout[axisId + '.range'] = [0, maxY + padding];
                 }
             });
             
             if (Object.keys(updateLayout).length > 0) {
                 Plotly.relayout('plotlyChart', updateLayout).then(() => {
+                    isRelayouting = false;
+                }).catch(err => {
                     isRelayouting = false;
                 });
             } else {
@@ -1592,10 +1821,78 @@
             const numSecondaryAxes = Math.max(0, selectedVariables.length - 1);
             const spacePerAxis = 0.08; 
             const plotDomainEnd = 1.0 - (numSecondaryAxes * spacePerAxis);
+            
+            const xAxisStart = parseFloat(document.getElementById('xAxisStart').value);
+            const xAxisEnd = parseFloat(document.getElementById('xAxisEnd').value);
+            let xAxisRange = null;
+            if (!isNaN(xAxisStart) && !isNaN(xAxisEnd) && xAxisStart < xAxisEnd) xAxisRange = [xAxisStart, xAxisEnd];
+
+            let masterUVRange = null;
+            if (selectedVariables.includes('UV')) {
+                const data = rawData['UV'];
+                if (data && data.x) {
+                    let maxUVY = -Infinity;
+                    const startScan = xAxisRange ? xAxisRange[0] : -Infinity;
+                    const endScan = xAxisRange ? xAxisRange[1] : Infinity;
+
+                    for (let i = 0; i < data.x.length; i++) {
+                        if (data.x[i] >= startScan && data.x[i] <= endScan) {
+                            if (data.y[i] > maxUVY) maxUVY = data.y[i];
+                        }
+                    }
+                    
+                    if (Number.isFinite(maxUVY) && maxUVY > -Infinity) {
+                        const padding = maxUVY === 0 ? 0.1 : Math.abs(maxUVY) * 0.05;
+                        masterUVRange = [0, maxUVY + padding];
+                    }
+                }
+            }
+
+            const primaryVar = document.getElementById('primaryVarSelect').value;
+            const startVal = parseFloat(document.getElementById('integStartValue').value);
+            const endVal = parseFloat(document.getElementById('integEndValue').value);
+            const useBaselineCut = document.getElementById('useBaselineCutCheck').checked;
+            const showRegion = document.getElementById('showIntegRegionCheck').checked;
+            const cutVarName = 'UV (Baseline Corrected)';
+
+            if (primaryVar && !isNaN(startVal) && !isNaN(endVal) && startVal < endVal && showRegion) {
+                const varIndex = selectedVariables.indexOf(primaryVar);
+                if (varIndex !== -1) {
+                    const data = rawData[primaryVar];
+                    const fillColor = document.getElementById('integFillColor').value;
+                    const axisName = varIndex === 0 ? 'y' : 'y' + (varIndex + 1);
+
+                    const subsetX = [];
+                    const subsetY_Top = [];
+                    const subsetY_Bottom = [];
+                    
+                    const hasBaseline = useBaselineCut && primaryVar.includes('UV') && rawData[cutVarName];
+                    const baselineData = hasBaseline ? rawData[cutVarName] : null;
+
+                    for(let i=0; i<data.x.length; i++) {
+                        if (data.x[i] >= startVal && data.x[i] <= endVal) {
+                            subsetX.push(data.x[i]);
+                            subsetY_Top.push(data.y[i]); 
+                            subsetY_Bottom.push(baselineData ? baselineData.y[i] : 0);
+                        }
+                    }
+
+                    traces.push({
+                        x: subsetX, y: subsetY_Bottom, mode: 'lines', line: { width: 0, color: 'transparent' }, 
+                        type: 'scatter', xaxis: 'x', yaxis: axisName, showlegend: false, hoverinfo: 'skip'
+                    });
+
+                    traces.push({
+                        x: subsetX, y: subsetY_Top, mode: 'lines', line: { width: 0, color: 'transparent' },
+                        type: 'scatter', fill: 'tonexty', fillcolor: fillColor, opacity: 0.5,
+                        xaxis: 'x', yaxis: axisName, showlegend: false, hoverinfo: 'skip'
+                    });
+                }
+            }
 
             selectedVariables.forEach(function(varName, idx) {
                 const data = rawData[varName];
-                const traceName = plotLabels[varName] || varName; // Get the trace name
+                const traceName = plotLabels[varName] || varName; 
                 traces.push({
                     x: data.x, 
                     y: data.y,
@@ -1609,28 +1906,16 @@
             });
             
             if (document.getElementById('showIntegrationLinesCheck').checked) {
-                const startVal = parseFloat(document.getElementById('integStartValue').value);
-                const endVal = parseFloat(document.getElementById('integEndValue').value);
                 if (!isNaN(startVal)) shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: startVal, y0: 0, x1: startVal, y1: 1, line: { color: 'red', width: 2, dash: 'solid' } });
                 if (!isNaN(endVal)) shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: endVal, y0: 0, x1: endVal, y1: 1, line: { color: 'red', width: 2, dash: 'solid' } });
             }
             
             if (document.getElementById('showFractionsCheck').checked && fractionData.length > 0) {
-                fractionData.forEach(function(fraction) {
+                 fractionData.forEach(function(fraction) {
                     if (fraction.show) {
                         shapes.push({
-                            type: 'line',
-                            xref: 'x',
-                            yref: 'paper', 
-                            x0: fraction.position,
-                            y0: 0,
-                            x1: fraction.position,
-                            y1: fontSettings.fractionLineHeight, 
-                            line: {
-                                color: fontSettings.fractionLineColor,
-                                width: fontSettings.fractionLineThickness,
-                                dash: dashStyles[fontSettings.fractionLineStyle] || 'dot'
-                            }
+                            type: 'line', xref: 'x', yref: 'paper', x0: fraction.position, y0: 0, x1: fraction.position, y1: fontSettings.fractionLineHeight, 
+                            line: { color: fontSettings.fractionLineColor, width: fontSettings.fractionLineThickness, dash: dashStyles[fontSettings.fractionLineStyle] || 'dot' }
                         });
                         annotations.push({ x: fraction.position, y: 0, xref: 'x', yref: 'paper', text: fraction.label, showarrow: false, font: { size: fontSettings.fractionSize, color: '#444' }, yanchor: 'top', yshift: fontSettings.fractionYShift, xanchor: 'center', textangle: fontSettings.fractionAngle });
                     }
@@ -1644,11 +1929,6 @@
                     traces.push({ x: [null], y: [null], type: 'scatter', mode: 'markers', name: region.label, marker: { symbol: 'square', color: region.color, size: 15, line: { width: 1, color: '#666' } }, showlegend: true });
                 });
             }
-            
-            const xAxisStart = parseFloat(document.getElementById('xAxisStart').value);
-            const xAxisEnd = parseFloat(document.getElementById('xAxisEnd').value);
-            let xAxisRange = null;
-            if (!isNaN(xAxisStart) && !isNaN(xAxisEnd) && xAxisStart < xAxisEnd) xAxisRange = [xAxisStart, xAxisEnd];
 
             const layout = {
                 width: fontSettings.width,
@@ -1665,12 +1945,21 @@
                     tickfont: { size: fontSettings.axisSize }, 
                     range: xAxisRange,
                     hoverformat: '.4f', 
-                    showline: true,
-                    linewidth: 1,
-                    linecolor: 'black',
-                    mirror: true,
+                    showline: true, 
+                    linewidth: 1, 
+                    linecolor: 'black', 
+                    mirror: true, 
                     showgrid: false,
-                    minor: { ticks: "" }
+                    ticks: "outside", 
+                    minor: {
+                        dtick: "auto",
+                        gridcolor: '#EBF0F8',
+                        ticklen: fontSettings.minorTickLength,
+                        tickwidth: 1,
+                        tickcolor: "black",
+                        showgrid: false,
+                        ticks: fontSettings.showMinorTicksX ? "outside" : ""
+                    }
                 },
                 annotations: annotations,
                 shapes: shapes,
@@ -1679,9 +1968,11 @@
             
             selectedVariables.forEach(function(varName, idx) {
                 const axisId = idx === 0 ? 'yaxis' : 'yaxis' + (idx + 1);
-                
                 let yRange = null;
-                if (xAxisRange) {
+                
+                if (varName === 'UV (Baseline Corrected)' && masterUVRange) {
+                    yRange = masterUVRange;
+                } else if (xAxisRange) {
                     const data = rawData[varName];
                     let maxY = -Infinity;
                     if (data && data.x) {
@@ -1691,8 +1982,8 @@
                             }
                         }
                     }
-                    if (maxY > -Infinity) {
-                        const padding = maxY === 0 ? 0.1 : maxY * 0.05;
+                    if (Number.isFinite(maxY) && maxY > -Infinity) {
+                        const padding = maxY === 0 ? 0.1 : Math.abs(maxY) * 0.05;
                         yRange = [0, maxY + padding];
                     }
                 }
@@ -1705,7 +1996,13 @@
                     range: yRange, 
                     rangemode: yRange ? 'normal' : 'tozero', 
                     zeroline: false,
-                    minor: { ticks: "" }
+                    minor: {
+                        ticklen: fontSettings.minorTickLength,
+                        tickwidth: 1,
+                        tickcolor: plotColors[varName],
+                        ticks: fontSettings.showMinorTicksY ? "outside" : "",
+                        showgrid: false
+                    }
                 };
                 
                 if (idx > 0) {
@@ -1716,19 +2013,19 @@
                     layout[axisId].showline = true;
                     layout[axisId].linewidth = 2;
                     layout[axisId].linecolor = plotColors[varName];
+                    layout[axisId].ticks = "outside"; 
                 } else {
                     layout[axisId].showgrid = false;
                     layout[axisId].showline = true;
                     layout[axisId].linewidth = 1;
                     layout[axisId].linecolor = plotColors[varName]; 
                     layout[axisId].mirror = true;
+                    layout[axisId].ticks = "outside";
                 }
             });
             
             const config = {
-                responsive: true, 
-                displayModeBar: true, 
-                displaylogo: false,
+                responsive: true, displayModeBar: true, displaylogo: false,
                 modeBarButtonsToRemove: ['select2d', 'lasso2d'],
                 toImageButtonOptions: { format: 'png', filename: currentFileName.replace(/\.[^/.]+$/, '') + '_chromatogram', height: 800, width: 1200, scale: 2 }
             };
@@ -1774,6 +2071,9 @@
             const rangeEl = document.getElementById('integRangeVal');
             const asymmetryEl = document.getElementById('integAsymmetryVal');
             const hetpEl = document.getElementById('integHETPVal');
+            const calcBtn = document.getElementById('calcBtn');
+            const warningEl = document.getElementById('concWarning');
+            const useBaselineCut = document.getElementById('useBaselineCutCheck').checked;
 
             const resetDisplay = () => {
                 integrationResults = { area: 0, volume: 0, start: 0, end: 0 };
@@ -1786,37 +2086,63 @@
 
             if (!primaryVar || !rawData[primaryVar]) {
                 resetDisplay();
+                calcBtn.disabled = true;
+                return;
+            } 
+            
+            const isUV = primaryVar.toUpperCase().includes('UV');
+            
+            if (isUV) {
+                calcBtn.disabled = false;
+                warningEl.style.display = 'none';
             } else {
-                const startVal = parseFloat(document.getElementById('integStartValue').value);
-                const endVal = parseFloat(document.getElementById('integEndValue').value);
-                
-                const data = rawData[primaryVar];
-                const filtered = data.x.reduce((acc, x, i) => {
-                    if (x >= startVal && x <= endVal) acc.push({ x, y: data.y[i] });
-                    return acc;
-                }, []);
-                
-                if (filtered.length > 2) {
-                    let area = 0;
-                    for (let i = 1; i < filtered.length; i++) {
-                        area += (filtered[i].x - filtered[i-1].x) * (filtered[i].y + filtered[i-1].y) / 2;
-                    }
-                    const volume = endVal - startVal;
-                    integrationResults = { area: area, volume: volume, start: startVal, end: endVal };
-                    
-                    areaEl.textContent = area.toFixed(2) + ' mL·mAU';
-                    volumeEl.textContent = volume.toFixed(2) + ' mL';
-                    rangeEl.textContent = startVal.toFixed(2) + ' - ' + endVal.toFixed(2) + ' mL';
+                calcBtn.disabled = true; 
+                warningEl.style.display = 'block'; 
+            }
 
-                    const metrics = calculatePeakMetrics(filtered);
-                    asymmetryEl.textContent = metrics.asymmetry.toFixed(2);
-                    hetpEl.textContent = metrics.hetp > 0 ? metrics.hetp.toFixed(2) + ' µm' : 'N/A';
+            const startVal = parseFloat(document.getElementById('integStartValue').value);
+            const endVal = parseFloat(document.getElementById('integEndValue').value);
+            
+            const mainData = rawData[primaryVar];
+            const cutVarName = 'UV (Baseline Corrected)';
+            const hasBaseline = useBaselineCut && isUV && rawData[cutVarName];
+            const baselineData = hasBaseline ? rawData[cutVarName] : null;
 
-                } else {
-                    resetDisplay();
-                    rangeEl.textContent = startVal.toFixed(2) + ' - ' + endVal.toFixed(2) + ' mL';
+            const filtered = [];
+
+            for (let i = 0; i < mainData.x.length; i++) {
+                const x = mainData.x[i];
+                if (x >= startVal && x <= endVal) {
+                    const yRaw = mainData.y[i];
+                    const yBase = baselineData ? (baselineData.y[i] || 0) : 0;
+                    let netY = yRaw - yBase;
+                    filtered.push({ x: x, y: netY });
                 }
             }
+            
+            if (filtered.length > 2) {
+                let area = 0;
+                for (let i = 1; i < filtered.length; i++) {
+                    const width = filtered[i].x - filtered[i-1].x;
+                    const height = (filtered[i].y + filtered[i-1].y) / 2;
+                    area += width * height;
+                }
+                const volume = endVal - startVal;
+                integrationResults = { area: area, volume: volume, start: startVal, end: endVal };
+                
+                areaEl.textContent = area.toFixed(2) + ' mL·mAU';
+                volumeEl.textContent = volume.toFixed(2) + ' mL';
+                rangeEl.textContent = startVal.toFixed(2) + ' - ' + endVal.toFixed(2) + ' mL';
+
+                const metrics = calculatePeakMetrics(filtered);
+                asymmetryEl.textContent = metrics.asymmetry.toFixed(2);
+                hetpEl.textContent = metrics.hetp > 0 ? metrics.hetp.toFixed(2) + ' µm' : 'N/A';
+
+            } else {
+                resetDisplay();
+                rangeEl.textContent = startVal.toFixed(2) + ' - ' + endVal.toFixed(2) + ' mL';
+            }
+            
             updateConcentrationDisplay();
         }
 
@@ -1894,7 +2220,7 @@
             fractionData = [];
             regionData = []; 
             integrationResults = { area: 0, volume: 0, start: 0, end: 0 };
-            
+            pendingBaselineOffset = 0;
             concentrationParams = { extCoeff: 1.0, pathLength: 0.2, mw: 1000 };
             columnParams = { length_mm: 150 };
             
@@ -1913,9 +2239,16 @@
                 fractionLineHeight: 1,
                 fractionLineColor: '#808080', 
                 fractionLineThickness: 1.5,
-                fractionLineStyle: 'dot'
+                fractionLineStyle: 'dot',
+                showMinorTicksX: false,
+                showMinorTicksY: false,
+                minorTickLength: 2
             };
-
+            const regionCheck = document.getElementById('showIntegRegionCheck');
+            if(regionCheck) {
+                regionCheck.disabled = true;
+                regionCheck.checked = false; 
+            }
             document.getElementById('colLength').value = 150;
             document.getElementById('plotCheckboxes').innerHTML = '<p style="color: #999; font-size: 13px;">Load data to see variables</p>';
             Plotly.purge('plotlyChart');
@@ -2033,12 +2366,22 @@
         }
 
         function openConcentrationCalculator() {
+            const primaryVar = document.getElementById('primaryVarSelect').value;
+            if (!primaryVar || !primaryVar.toUpperCase().includes('UV')) {
+                alert("Concentration calculation is only available for UV data.");
+                return;
+            }
+
             document.getElementById('extCoeffInput').value = concentrationParams.extCoeff;
             document.getElementById('pathLengthInput').value = concentrationParams.pathLength;
             document.getElementById('molecularWeightInput').value = concentrationParams.mw;
 
+            const useCut = document.getElementById('useBaselineCutCheck').checked;
+            const sourceText = useCut ? "UV minus Baseline" : "Raw UV (No Baseline Correction)";
+
             const resultsDiv = document.getElementById('calcIntegrationResults');
             resultsDiv.innerHTML = 
+                '<div><strong>Method:</strong> ' + sourceText + '</div>' + 
                 '<div><strong>Integration Range:</strong> ' + integrationResults.start.toFixed(2) + ' - ' + integrationResults.end.toFixed(2) + ' mL</div>' +
                 '<div><strong>Peak Area:</strong> ' + integrationResults.area.toFixed(2) + ' mL·mAU</div>' +
                 '<div><strong>Peak Volume:</strong> ' + integrationResults.volume.toFixed(2) + ' mL</div>';
