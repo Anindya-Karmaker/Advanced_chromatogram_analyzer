@@ -57,7 +57,7 @@ Use the **📊 Plot Selection & Styling** panel.
 ![The main styling panel showing controls for data traces, fractions, and regions.](https://github.com/user-attachments/assets/82dd8dcf-2999-48a9-a941-c845176cfd29)
 
 #### 3. Annotate the Chart
--   **Manage Fractions:** Add, edit, or hide fraction markers.
+-   **Manage Fractions:** Add, edit, or delete fraction markers.
 -   **Label Regions:** Define colored background zones to mark chromatography phases.
 
 <img width="800" height="695" alt="image" src="https://github.com/user-attachments/assets/1c781915-ddab-4fe1-bfc9-fdeb3ec8bee5" />
