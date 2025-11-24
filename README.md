@@ -78,7 +78,8 @@ Go to the **📐 Integration & Analysis** panel:
 #### 5. Calculate Concentration
 Click **🧪 Calculate Concentration**. The tool uses the integrated area (Net Area if baseline correction is active) and your input parameters (Extinction Coefficient, Path Length, MW) to calculate total milligrams.
 
-![The concentration calculator modal for applying Beer-Lambert law parameters.](https://github.com/user-attachments/assets/02a4d8ca-4b03-4610-a774-2b26bc914fc9)
+<img width="798" height="682" alt="image" src="https://github.com/user-attachments/assets/8490113a-0915-4a69-a7d0-6496193f2b79" />
+
 
 #### 6. Fine-Tune Appearance & Export
 -   **Customize Fonts & Layout:** Click **⚙️ Font and Style Settings** to open the advanced editor. Here you can change the chart title, font family, element sizes, label rotation/offsets, and enable **Minor Ticks** for a professional, publication-ready look.
