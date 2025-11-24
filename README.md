@@ -99,4 +99,4 @@ Click **🧪 Calculate Concentration**. The tool uses the integrated area (Net A
 
 ## 📄 License
 
-All rights reserved. Unauthorized copy or distribution of this application is strictly prohibited. For inquiries, please contact the [McDonald-Nandi Lab](https://mcdonnanld-nandi.ech.ucdavis.edu/).
+All rights reserved. Unauthorized copy or distribution of this application is strictly prohibited. Developed by Anindya Karmaker. For inquiries or feedback, please contact the [McDonald-Nandi Lab](https://mcdonnanld-nandi.ech.ucdavis.edu/).
