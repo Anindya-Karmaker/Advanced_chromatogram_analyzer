@@ -2,7 +2,8 @@
 
 A powerful, browser-based tool for visualizing, analyzing, and exporting chromatography data directly from ÄKTA-generated files or custom CSV/Excel sheets. No installation required.
 
-<img width="1611" height="1019" alt="image" src="https://github.com/user-attachments/assets/1830c5ba-40cd-4891-ab19-cd5107d0f239" />
+<img width="1598" height="1000" alt="image" src="https://github.com/user-attachments/assets/79d2e800-7288-4701-a56e-8c468fefea99" />
+
 
 ## 🧬 Overview
 
