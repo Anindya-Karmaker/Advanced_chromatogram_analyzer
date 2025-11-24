@@ -2,7 +2,7 @@
 
 A powerful, browser-based tool for visualizing, analyzing, and exporting chromatography data directly from ÄKTA-generated files or custom CSV/Excel sheets. No installation required.
 
-![Advanced Chromatogram Analyzer Interface](https://github.com/user-attachments/assets/eed13bc4-5cc9-4c74-b3ab-65c0d88bad34)
+<img width="1611" height="1019" alt="image" src="https://github.com/user-attachments/assets/1830c5ba-40cd-4891-ab19-cd5107d0f239" />
 
 ## 🧬 Overview
 
@@ -10,26 +10,27 @@ This tool was created for researchers who need a fast, private, and flexible way
 
 ## 🚀 Key Features
 
--   **Direct ÄKTA Import:** Natively parses tab-delimited `.txt` or `.csv` files from GE Unicorn software.
--   **Custom Data Import:** A flexible wizard to import data from any generic CSV or Excel (`.xlsx`, `.xls`) file by mapping columns.
--   **Save & Load Sessions:** Save your entire analysis state—including data, annotations, and all settings—into a single `.json` file. Load a session file to resume your work exactly where you left off.
+-   **Smart Data Import:**
+    -   **ÄKTA Native Support:** Parses tab-delimited `.txt` or `.csv` files from GE Unicorn software, automatically extracting units and variable names.
+    -   **Baseline Correction:** Automatically detects negative UV values upon import and offers to offset the baseline to zero.
+    -   **Custom Import Wizard:** Map columns from generic CSV or Excel (`.xlsx`, `.xls`) files.
+-   **Session Management:** Save your entire analysis state—including data, annotations, integration bounds, and visual settings—into a single `.json` file to resume work later.
 -   **Interactive Multi-Axis Plotting:**
-    -   Visualize multiple variables on a single plot, each with its own y-axis.
-    -   Full control over line color, thickness, style, and custom labels, with changes reflected instantly.
-    -   Zoom and pan capabilities, with a double-click to autoscale and reset the view.
--   **Advanced Peak Analysis:**
-    -   Visually select an integration range.
+    -   Visualize multiple variables on a single plot with synchronized axes.
+    -   **Auto-scaling Baseline:** The "UV (Baseline Corrected)" axis automatically synchronizes with the main UV axis for accurate comparison.
+    -   Full control over line color, thickness, style, and labels.
+-   **Advanced Peak Analysis & Integration:**
+    -   **Net Area Calculation:** Toggle **"Use UV-Baseline Corrected Data"** to calculate the area *between* the raw UV signal and the baseline signal.
+    -   **Visual Integration:** Toggle **"Show Region"** to visually shade the specific area being integrated with customizable colors.
     -   Automatically calculates **Peak Area**, **Volume**, **Asymmetry Factor (As)**, and **HETP**.
-    -   Calculations update in real-time as you adjust the integration range.
--   **Rich Annotations & Styling:**
-    -   **Fraction Management:** Automatically import, manually add, edit, or remove fractions.
-    -   **Fraction Styling:** Customize the color, thickness, and line style (`solid`, `dot`, etc.) of fraction markers directly from the main control panel.
-    -   **Label Regions:** Create colored, labeled regions (e.g., "Load", "Wash", "Elution") to clearly annotate different phases of the chromatogram.
--   **Protein Concentration Calculator:** Uses the integrated peak area and Beer-Lambert law parameters to estimate the total protein amount in milligrams.
--   **Publication-Ready Exporting:**
-    -   **High-Resolution PNG:** Save the plot as a PNG at **1x, 2x, or 3x resolution**.
-    -   **Full Font & Style Customization:** A dedicated modal to control the chart title, font family, sizes, line heights, label rotation, and element offsets.
-    -   **Copy to Clipboard:** Instantly copy the plot for pasting into presentations or lab notebooks.
+-   **Rich Annotations:**
+    -   **Fraction Management:** Automatically import or manually add/edit fraction markers.
+    -   **Label Regions:** Highlight specific phases (e.g., "Load", "Elution") with colored background regions.
+-   **Protein Concentration Calculator:** Uses the integrated net peak area and Beer-Lambert law parameters to estimate total protein amount (mg).
+-   **Publication-Ready Styling:**
+    -   **Professional Axis Styling:** Enable and customize **Minor Ticks** for both X and Y axes.
+    -   **High-Res Export:** Save plots as PNGs at up to 3x resolution.
+    -   **Fine-Grained Control:** Adjust font sizes, line heights, legend positions, and label rotation via a dedicated settings panel.
 -   **100% Client-Side:** Your data is processed locally in your browser. Nothing is ever uploaded to a server, ensuring complete data privacy.
 
 ## ⚙️ How to Use
@@ -44,37 +45,44 @@ No installation is needed!
 ### Step-by-Step Workflow
 
 #### 1. Import Your Data
-Use the **📁 Open ÄKTA File** button for standard Unicorn exports. For other formats, use **⚙️ Custom Import**. To save your work for later, use **💾 Save Session**, or to resume a previous analysis, use **📂 Load Session**.
+Use **📁 Open ÄKTA File** for Unicorn exports. If the tool detects negative UV values (e.g., baseline drift), a prompt will appear asking if you wish to zero the baseline automatically. Use **⚙️ Custom Import** for other file types.
 
 #### 2. Customize the Plot
-Use the **📊 Plot Selection & Styling** panel. All changes here update the plot instantly.
--   Select variables and customize their **color, line style, thickness, and label**.
--   Toggle visibility and style of **Fractions** and **Regions**.
--   Manually set the **X-axis range** and click **📊 Update Plot** to apply. Double-click the plot to reset the view.
+Use the **📊 Plot Selection & Styling** panel.
+-   Select variables to plot.
+-   Customize line styles (solid, dot, dash) and colors.
+-   Toggle **Fractions** and **Regions** visibility.
+-   Manually set the **X-axis range** for precise views, or double-click the chart to autoscale.
 
 ![The main styling panel showing controls for data traces, fractions, and regions.](https://github.com/user-attachments/assets/82dd8dcf-2999-48a9-a941-c845176cfd29)
 
-
 #### 3. Annotate the Chart
--   **Manage Fractions:** Use the **🧫 Fractions** panel to add, edit, or hide fraction markers.
--   **Label Regions:** Use the **🎨 Label Regions** panel to define and color important sections like "Wash" or "Elution". These appear as shaded areas and are listed in the legend.
+-   **Manage Fractions:** Add, edit, or hide fraction markers.
+-   **Label Regions:** Define colored background zones to mark chromatography phases.
 
-#### 4. Analyze Peaks
--   **Enter Column Parameters:** Input your column's length in millimeters for accurate HETP calculation.
--   **Integrate a Peak:** In the **📐 Integration & Analysis** panel, select your primary variable (usually `UV`) and use the `Start` and `End` fields to define the peak boundaries. The `Area`, `Volume`, `Asymmetry`, and `HETP` are calculated automatically.
+<img width="798" height="435" alt="image" src="https://github.com/user-attachments/assets/03cbbf2e-6fc5-4243-bbf4-4bb6e6549e24" />
 
-![The integration panel showing real-time calculations for peak analysis.](https://github.com/user-attachments/assets/171a8ef9-7245-4f61-bd58-a36cd8294d2f)
+#### 4. Analyze Peaks & Integrate
+Go to the **📐 Integration & Analysis** panel:
+1.  **Select Variable:** Choose `UV` (or your protein signal).
+2.  **Set Range:** Use the `Start` and `End` fields to bracket your peak.
+3.  **Baseline Subtraction:** Check **"Use UV-Baseline Corrected Data"** to subtract the baseline signal from the calculation.
+4.  **Visualize:** Check **"Show Region"** to fill the integrated area with color.
+5.  **Results:** View real-time calculations for Area, Volume, Asymmetry, and HETP.
+
+<img width="329" height="481" alt="image" src="https://github.com/user-attachments/assets/71ac620e-bee6-464e-adb8-ecac32dbae88" />
 
 #### 5. Calculate Concentration
-The **Amount (mg)** is calculated automatically in the integration panel. To adjust parameters, click **🧪 Calculate Concentration**, enter your protein's specific values (Ext. Coeff., Path Length, MW), and the amount will update in real-time.
+Click **🧪 Calculate Concentration**. The tool uses the integrated area (Net Area if baseline correction is active) and your input parameters (Extinction Coefficient, Path Length, MW) to calculate total milligrams.
 
 ![The concentration calculator modal for applying Beer-Lambert law parameters.](https://github.com/user-attachments/assets/02a4d8ca-4b03-4610-a774-2b26bc914fc9)
 
 #### 6. Fine-Tune Appearance & Export
--   **Customize Fonts & Layout:** Click **⚙️ Font and Style Settings** to open the advanced editor. Here you can change the chart title, font family, element sizes, label rotation/offsets, and fraction line height to achieve a professional, publication-ready look.
+-   **Customize Fonts & Layout:** Click **⚙️ Font and Style Settings** to open the advanced editor. Here you can change the chart title, font family, element sizes, label rotation/offsets, and enable **Minor Ticks** for a professional, publication-ready look.
 -   **Save or Copy:** Use the `Save as PNG` button to choose a resolution and download the image, or `Copy to Clipboard` to capture the plot for quick use elsewhere.
 
-![The font and style settings modal, providing deep customization for exporting.](https://github.com/user-attachments/assets/6f7e3500-b7a6-4489-959a-523fbc5b14b5)
+<img width="601" height="833" alt="image" src="https://github.com/user-attachments/assets/98b80eae-9d55-4029-bcc3-4e4bea683c2e" />
+<img width="594" height="391" alt="image" src="https://github.com/user-attachments/assets/4792f5ac-7183-47c2-9805-033d8aeab93d" />
 
 ## 🛠️ Built With
 
