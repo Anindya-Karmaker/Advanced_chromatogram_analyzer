@@ -60,6 +60,9 @@ Use the **📊 Plot Selection & Styling** panel.
 -   **Manage Fractions:** Add, edit, or hide fraction markers.
 -   **Label Regions:** Define colored background zones to mark chromatography phases.
 
+<img width="800" height="695" alt="image" src="https://github.com/user-attachments/assets/1c781915-ddab-4fe1-bfc9-fdeb3ec8bee5" />
+
+
 <img width="798" height="435" alt="image" src="https://github.com/user-attachments/assets/03cbbf2e-6fc5-4243-bbf4-4bb6e6549e24" />
 
 #### 4. Analyze Peaks & Integrate
