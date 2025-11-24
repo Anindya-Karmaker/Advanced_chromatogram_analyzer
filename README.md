@@ -84,8 +84,10 @@ Click **🧪 Calculate Concentration**. The tool uses the integrated area (Net A
 -   **Customize Fonts & Layout:** Click **⚙️ Font and Style Settings** to open the advanced editor. Here you can change the chart title, font family, element sizes, label rotation/offsets, and enable **Minor Ticks** for a professional, publication-ready look.
 -   **Save or Copy:** Use the `Save as PNG` button to choose a resolution and download the image, or `Copy to Clipboard` to capture the plot for quick use elsewhere.
 
-<img width="601" height="833" alt="image" src="https://github.com/user-attachments/assets/98b80eae-9d55-4029-bcc3-4e4bea683c2e" />
-<img width="594" height="391" alt="image" src="https://github.com/user-attachments/assets/4792f5ac-7183-47c2-9805-033d8aeab93d" />
+<img width="595" height="748" alt="image" src="https://github.com/user-attachments/assets/5ae46f00-dc8f-4a43-a41a-3ca3b2909955" />
+
+<img width="595" height="407" alt="image" src="https://github.com/user-attachments/assets/e748063f-0bd4-47f5-9987-5cfad3c0b551" />
+
 
 ## 🛠️ Built With
 
