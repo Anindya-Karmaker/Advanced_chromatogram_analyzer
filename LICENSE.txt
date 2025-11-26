@@ -1,10 +1,10 @@
 ================================================================================
-    Chromatogram-and-Glycan-Analyzer - Academic and Commercial Use License
+    Advanced_chromatogram_analyzer - Academic and Commercial Use License
 ================================================================================
 
 Copyright (c) 2025 Anindya Karmaker
 
-This license governs the use of the Chromatogram-and-Glycan-Analyzer software and its associated documentation files (the "Software"). By using, copying, or accessing the Software, you agree to be bound by the terms of this license.
+This license governs the use of the Advanced_chromatogram_analyzer software and its associated documentation files (the "Software"). By using, copying, or accessing the Software, you agree to be bound by the terms of this license.
 
 **1. Academic Use License Grant**
 
@@ -32,5 +32,6 @@ Modifications to the Software are permitted for personal or internal academic us
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 **5. Limitation of Liability**
+
 
 IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
