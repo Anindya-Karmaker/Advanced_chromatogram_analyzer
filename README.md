@@ -117,10 +117,10 @@ If you use **Advanced Chromatogram Analyzer** in your research, presentations, o
 
 **BibTeX:**
 ```bibtex
-@software{ChromatogramAnalyzer2024,
+@software{AdvancedChromatogramAnalyzer2025,
   author = {Karmaker, Anindya},
   title = {Advanced Chromatogram Analyzer},
-  year = {2024},
+  year = {2025},
   url = {https://github.com/Anindya-Karmaker/Advanced_chromatogram_analyzer},
   organization = {McDonald-Nandi Lab, University of California, Davis},
   version = {3.5}
