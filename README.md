@@ -107,3 +107,21 @@ Click **🧪 Calculate Concentration**. The tool uses the integrated area (Net A
 ## 📄 License
 
 Developed by Anindya Karmaker. All rights reserved. Unauthorized copy or distribution of this application is strictly prohibited. For inquiries or feedback, please contact the [McDonald-Nandi Lab](https://mcdonald-nandi.ech.ucdavis.edu/).
+
+## Citation
+
+If you use **Advanced Chromatogram Analyzer** in your research, presentations, or publications, please cite it as follows:
+
+**APA Format:**
+> Karmaker, A. (2024). *Advanced Chromatogram Analyzer* [Software]. McDonald-Nandi Lab, University of California, Davis. https://github.com/Anindya-Karmaker/Advanced_chromatogram_analyzer
+
+**BibTeX:**
+```bibtex
+@software{ChromatogramAnalyzer2024,
+  author = {Karmaker, Anindya},
+  title = {Advanced Chromatogram Analyzer},
+  year = {2024},
+  url = {https://github.com/Anindya-Karmaker/Advanced_chromatogram_analyzer},
+  organization = {McDonald-Nandi Lab, University of California, Davis},
+  version = {3.5}
+}
