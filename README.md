@@ -2,7 +2,8 @@
 
 A powerful, browser-based tool for visualizing, analyzing, and exporting chromatography data directly from ÄKTA-generated files or custom CSV/Excel sheets. No installation required.
 
-<img width="1598" height="1000" alt="image" src="https://github.com/user-attachments/assets/79d2e800-7288-4701-a56e-8c468fefea99" />
+<img width="1597" height="979" alt="image" src="https://github.com/user-attachments/assets/6506fde2-4726-43b3-8552-608c2d3e2d4f" />
+
 
 
 ## 🧬 Overview
@@ -21,6 +22,7 @@ This tool was created for researchers who need a fast, private, and flexible way
     -   **Auto-scaling Baseline:** The "UV (Baseline Corrected)" axis automatically synchronizes with the main UV axis for accurate comparison.
     -   Full control over line color, thickness, style, and labels.
 -   **Advanced Peak Analysis & Integration:**
+    -   **Auto Peak Detection:** Automatically identify peaks based on customizable height and distance thresholds.
     -   **Net Area Calculation:** Toggle **"Use UV-Baseline Corrected Data"** to calculate the area *between* the raw UV signal and the baseline signal.
     -   **Visual Integration:** Toggle **"Show Region"** to visually shade the specific area being integrated with customizable colors.
     -   Automatically calculates **Peak Area**, **Volume**, **Asymmetry Factor (As)**, and **HETP**.
@@ -30,8 +32,9 @@ This tool was created for researchers who need a fast, private, and flexible way
 -   **Protein Concentration Calculator:** Uses the integrated net peak area and Beer-Lambert law parameters to estimate total protein amount (mg).
 -   **Publication-Ready Styling:**
     -   **Professional Axis Styling:** Enable and customize **Minor Ticks** for both X and Y axes.
+    -   **Typography Control:** Customize font sizes and toggle **Bold** styles independently for Titles, Axes, Fractions, and Regions.
     -   **High-Res Export:** Save plots as PNGs at up to 3x resolution.
-    -   **Fine-Grained Control:** Adjust font sizes, line heights, legend positions, and label rotation via a dedicated settings panel.
+    -   **Fine-Grained Control:** Adjust legend positions, label rotation, and offsets via a dedicated settings panel.
 -   **100% Client-Side:** Your data is processed locally in your browser. Nothing is ever uploaded to a server, ensuring complete data privacy.
 
 ## ⚙️ How to Use
@@ -68,11 +71,14 @@ Use the **📊 Plot Selection & Styling** panel.
 
 #### 4. Analyze Peaks & Integrate
 Go to the **📐 Integration & Analysis** panel:
-1.  **Select Variable:** Choose `UV` (or your protein signal).
-2.  **Set Range:** Use the `Start` and `End` fields to bracket your peak.
-3.  **Baseline Subtraction:** Check **"Use UV-Baseline Corrected Data"** to subtract the baseline signal from the calculation (If present in the UNICORN file).
-4.  **Visualize:** Check **"Show Region"** to fill the integrated area with color.
-5.  **Results:** View real-time calculations for Area, Volume, Asymmetry, and HETP.
+1.  **Peak Detection:** Use **"📍 Show Peaks"** to automatically find local maxima. Adjust "Min Height" and "Min Distance" to filter noise.
+2.  **Select Variable:** Choose `UV` (or your protein signal).
+3.  **Set Range:** Use the `Start` and `End` fields to bracket your peak.
+4.  **Baseline Subtraction:** Check **"Use UV-Baseline Corrected Data"** to subtract the baseline signal from the calculation (If present in the UNICORN file).
+5.  **Visualize:** Check **"Show Region"** to fill the integrated area with color.
+6.  **Results:** View real-time calculations for Area, Volume, Asymmetry, and HETP.
+7.  
+<img width="318" height="149" alt="image" src="https://github.com/user-attachments/assets/067bcc5a-8ad7-4392-b7ca-b5cc69c76cb0" />
 
 <img width="329" height="481" alt="image" src="https://github.com/user-attachments/assets/71ac620e-bee6-464e-adb8-ecac32dbae88" />
 
@@ -83,10 +89,11 @@ Click **🧪 Calculate Concentration**. The tool uses the integrated area (Net A
 
 
 #### 6. Fine-Tune Appearance & Export
--   **Customize Fonts & Layout:** Click **⚙️ Font and Style Settings** to open the advanced editor. Here you can change the chart title, font family, element sizes, label rotation/offsets, and enable **Minor Ticks** for a professional, publication-ready look.
+-   **Customize Fonts & Layout:** Click **⚙️ Font and Style Settings** to open the advanced editor. Here you can change the chart title, font family, element sizes, make fonts **Bold**, label rotation/offsets, and enable **Minor Ticks** for a professional, publication-ready look.
 -   **Save or Copy:** Use the `Save as PNG` button to choose a resolution and download the image, or `Copy to Clipboard` to capture the plot for quick use elsewhere.
 
-<img width="595" height="748" alt="image" src="https://github.com/user-attachments/assets/5ae46f00-dc8f-4a43-a41a-3ca3b2909955" />
+
+<img width="598" height="830" alt="image" src="https://github.com/user-attachments/assets/c4c0be45-a5d6-44f0-bece-d1ed85b85d6f" />
 
 <img width="595" height="407" alt="image" src="https://github.com/user-attachments/assets/e748063f-0bd4-47f5-9987-5cfad3c0b551" />
 
