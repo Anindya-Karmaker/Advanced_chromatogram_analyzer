@@ -78,9 +78,8 @@ Go to the **📐 Integration & Analysis** panel:
 5.  **Visualize:** Check **"Show Region"** to fill the integrated area with color.
 6.  **Results:** View real-time calculations for Area, Volume, Asymmetry, and HETP.
   
-<img width="318" height="149" alt="image" src="https://github.com/user-attachments/assets/067bcc5a-8ad7-4392-b7ca-b5cc69c76cb0" />
-
 <img width="329" height="481" alt="image" src="https://github.com/user-attachments/assets/71ac620e-bee6-464e-adb8-ecac32dbae88" />
+<img width="318" height="149" alt="image" src="https://github.com/user-attachments/assets/067bcc5a-8ad7-4392-b7ca-b5cc69c76cb0" />
 
 #### 5. Calculate Concentration
 Click **🧪 Calculate Concentration**. The tool uses the integrated area (Net Area if baseline correction is active) and your input parameters (Extinction Coefficient, Path Length, MW) to calculate total milligrams.
