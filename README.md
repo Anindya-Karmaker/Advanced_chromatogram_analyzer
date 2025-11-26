@@ -77,7 +77,7 @@ Go to the **📐 Integration & Analysis** panel:
 4.  **Baseline Subtraction:** Check **"Use UV-Baseline Corrected Data"** to subtract the baseline signal from the calculation (If present in the UNICORN file).
 5.  **Visualize:** Check **"Show Region"** to fill the integrated area with color.
 6.  **Results:** View real-time calculations for Area, Volume, Asymmetry, and HETP.
-7.  
+  
 <img width="318" height="149" alt="image" src="https://github.com/user-attachments/assets/067bcc5a-8ad7-4392-b7ca-b5cc69c76cb0" />
 
 <img width="329" height="481" alt="image" src="https://github.com/user-attachments/assets/71ac620e-bee6-464e-adb8-ecac32dbae88" />
