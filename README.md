@@ -113,12 +113,12 @@ Developed by Anindya Karmaker. All rights reserved. Unauthorized copy or distrib
 If you use **Advanced Chromatogram Analyzer** in your research, presentations, or publications, please cite it as follows:
 
 **APA Format:**
-> Karmaker, A. (2024). *Advanced Chromatogram Analyzer* [Software]. McDonald-Nandi Lab, University of California, Davis. https://github.com/Anindya-Karmaker/Advanced_chromatogram_analyzer
+> Karmaker, A., McCormick, A., Nandi, S., & McDonald, K. (2024). *Advanced Chromatogram Analyzer* [Software]. McDonald-Nandi Lab, University of California, Davis. https://github.com/Anindya-Karmaker/Advanced_chromatogram_analyzer
 
 **BibTeX:**
 ```bibtex
 @software{AdvancedChromatogramAnalyzer2025,
-  author = {Karmaker, Anindya},
+  author = {Karmaker, Anindya and McCormick, Alison and Nandi, Somen and McDonald, Karen},
   title = {Advanced Chromatogram Analyzer},
   year = {2025},
   url = {https://github.com/Anindya-Karmaker/Advanced_chromatogram_analyzer},
