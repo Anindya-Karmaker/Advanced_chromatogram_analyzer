@@ -3,10 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chromatogram Analyzer - Advanced</title>
+    
+    <title>Advanced Chromatogram Analyzer | Free Online ÄKTA & HPLC Data Analysis</title>
+    <meta name="description" content="Free browser-based tool to visualize and analyze chromatography data (ÄKTA, HPLC, FPLC). Import UNICORN files, calculate protein concentration, peak area, asymmetry, and HETP without installation.">
+    <meta name="keywords" content="Chromatogram, ÄKTA, HPLC, FPLC, Protein Purification, Peak Integration, Beer-Lambert Calculator, UNICORN software alternative, Scientific Graphing">
+    <meta name="author" content="Anindya Karmaker, McDonald-Nandi Lab">
+    <meta name="robots" content="index, follow">
+    <meta name="google-site-verification" content="q3QbTQRwbF4sE_Bq7pN9bq6uHcnUtc_WmH8BsjpMM8M" />
+    <link rel="canonical" href="https://anindya-karmaker.github.io/Advanced_chromatogram_analyzer/">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Advanced Chromatogram Analyzer",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "ScientificApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Anindya Karmaker"
+      },
+      "description": "A browser-based tool for visualizing, analyzing, and exporting chromatography data directly from ÄKTA-generated files or custom CSV/Excel sheets.",
+      "featureList": "Peak Integration, Beer-Lambert Concentration Calculator, HETP Calculation, Chromatogram Plotting"
+    }
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -509,7 +539,6 @@
                 font-size: 28px; 
             }
         }
-
     </style>
 </head>
 <body>
@@ -517,6 +546,7 @@
         <div class="app-header">
             <div class="header">
                 <h1 class="app-title">Advanced Chromatogram Analyzer V3.5</h1>
+                <h2 style="display:none;">Free online tool for ÄKTA file visualization, peak integration, and protein concentration calculation.</h2>
                 <p class="app-subtitle">Interactive visualization and analysis of chromatography data.</p>
             </div>
             <div class="header-right">
