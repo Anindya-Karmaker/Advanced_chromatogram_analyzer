@@ -707,6 +707,13 @@
                             Corrected Data</label>
                     </div>
 
+                    <div style="margin-bottom: 10px;">
+                        <label style="font-size: 13px; color: #555;">Manual Baseline (mAU):</label>
+                        <input type="number" id="manualBaselineInput" value="0" step="0.1"
+                            onchange="updateIntegration(); plotGraph();" disabled
+                            style="width: 100%; padding: 5px; border: 1px solid #ced4da; border-radius: 4px;">
+                    </div>
+
                     <div class="range-control">
                         <div class="range-item">
                             <label>Start:</label>
@@ -768,7 +775,8 @@
                         🧪 Calculate Concentration
                     </button>
                     <hr style="margin: 10px 0;">
-                    <h4 style="font-size: 13px; font-weight: 600; color: #555; margin-bottom: 8px;">Peak Detection</h4>
+                    <h4 style="font-size: 13px; font-weight: 600; color: #555; margin-bottom: 8px;">Peak Detection
+                    </h4>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                         <div class="form-group" style="margin:0">
@@ -837,7 +845,8 @@
 
             <div class="button-group" style="margin-top: 20px;">
                 <button onclick="handleBaselineCorrection(true)" class="button-success">Yes, Zero Baseline</button>
-                <button onclick="handleBaselineCorrection(false)" class="button-secondary">No, Keep Original</button>
+                <button onclick="handleBaselineCorrection(false)" class="button-secondary">No, Keep
+                    Original</button>
             </div>
         </div>
     </div>
@@ -2392,6 +2401,7 @@
             const startVal = parseFloat(document.getElementById('integStartValue').value);
             const endVal = parseFloat(document.getElementById('integEndValue').value);
             const useBaselineCut = document.getElementById('useBaselineCutCheck').checked;
+            const manualBaseline = parseFloat(document.getElementById('manualBaselineInput').value) || 0;
             const showRegion = document.getElementById('showIntegRegionCheck').checked;
             const cutVarName = 'UV (Baseline Corrected)';
 
@@ -2407,7 +2417,12 @@
                     for (let i = 0; i < data.x.length; i++) {
                         if (data.x[i] >= startVal && data.x[i] <= endVal) {
                             subsetX.push(data.x[i]); subsetY_Top.push(data.y[i]);
-                            subsetY_Bottom.push(baselineData ? baselineData.y[i] : 0);
+                            // Visual bottom is the sum of all subtracted baselines
+                            // If we calculate Area = (Top - Bottom_visual), implies Bottom_visual = Top - Area_height
+                            // Area_height = Top - (Baseline_data + Manual)
+                            // So Bottom_visual = Baseline_data + Manual
+                            const baseVal = baselineData ? baselineData.y[i] : 0;
+                            subsetY_Bottom.push(baseVal + manualBaseline);
                         }
                     }
                     traces.push({ x: subsetX, y: subsetY_Bottom, mode: 'lines', line: { width: 0, color: 'transparent' }, type: 'scatter', xaxis: 'x', yaxis: axisName, showlegend: false, hoverinfo: 'skip' });
@@ -3038,6 +3053,7 @@
             const calcBtn = document.getElementById('calcBtn');
             const warningEl = document.getElementById('concWarning');
             const useBaselineCut = document.getElementById('useBaselineCutCheck').checked;
+            const manualBaseline = parseFloat(document.getElementById('manualBaselineInput').value) || 0;
 
             const resetDisplay = () => {
                 integrationResults = { area: 0, volume: 0, start: 0, end: 0 };
@@ -3051,6 +3067,7 @@
             if (!primaryVar || !rawData[primaryVar]) {
                 resetDisplay();
                 calcBtn.disabled = true;
+                document.getElementById('manualBaselineInput').disabled = true;
                 return;
             }
 
@@ -3058,6 +3075,7 @@
 
             if (isUV) {
                 calcBtn.disabled = false;
+                document.getElementById('manualBaselineInput').disabled = false;
                 warningEl.style.display = 'none';
             } else {
                 calcBtn.disabled = true;
@@ -3079,7 +3097,7 @@
                 if (x >= startVal && x <= endVal) {
                     const yRaw = mainData.y[i];
                     const yBase = baselineData ? (baselineData.y[i] || 0) : 0;
-                    let netY = yRaw - yBase;
+                    let netY = yRaw - yBase - manualBaseline;
                     filtered.push({ x: x, y: netY });
                 }
             }
