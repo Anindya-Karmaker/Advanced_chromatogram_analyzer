@@ -551,6 +551,200 @@
                 font-size: 28px;
             }
         }
+
+        /* ─── TABBED CONTROLS PANEL ─── */
+        .controls-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-height: 90vh;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+        }
+
+        /* Tab navigation bar */
+        .tab-nav {
+            display: flex;
+            background: #f0f4f8;
+            border-bottom: 2px solid #d1dce8;
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px 7px;
+            background: transparent;
+            color: #5a6a7a;
+            border: none;
+            border-bottom: 3px solid transparent;
+            border-radius: 0;
+            margin-top: 0;
+            margin-bottom: -2px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            min-width: 0;
+            line-height: 1.2;
+        }
+
+        .tab-btn:hover:not(:disabled) {
+            background: #e4eaf2;
+            color: #1a3a5c;
+        }
+
+        .tab-btn.active {
+            background: #fff;
+            color: #00796b;
+            border-bottom: 3px solid #00796b;
+        }
+
+        .tab-icon {
+            font-size: 16px;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .tab-label {
+            font-size: 10.5px;
+            white-space: nowrap;
+        }
+
+        /* Tab content areas */
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            padding: 14px 14px 18px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* Section sub-labels within tabs */
+        .tab-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #8a9bb0;
+            margin-bottom: 7px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #eef0f3;
+        }
+
+        /* Import-tab specific */
+        .btn-import {
+            width: 100%;
+            background: #00796b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 6px;
+            transition: background 0.2s;
+        }
+        .btn-import:hover { background: #004d40; }
+
+        .btn-import-secondary {
+            width: 100%;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+            border-radius: 6px;
+            padding: 9px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 4px;
+            transition: background 0.2s;
+        }
+        .btn-import-secondary:hover { background: #c8e6c9; }
+
+        .button-grid-2 {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .button-grid-2 button { flex: 1; margin-top: 0; }
+
+        .import-hint {
+            margin-top: 14px;
+            padding: 10px 12px;
+            background: #f0f7ff;
+            border: 1px solid #bdd7f5;
+            border-radius: 6px;
+            font-size: 11.5px;
+            color: #3a5f8a;
+            line-height: 1.5;
+        }
+
+        /* Result rows in Analysis tab */
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 12px;
+            padding: 2px 0;
+        }
+        .result-label { color: #666; font-weight: 600; }
+        .result-value { color: #222; font-weight: 500; }
+        .result-divider {
+            border-top: 1px solid #ddd;
+            margin-top: 4px;
+            padding-top: 4px;
+        }
+
+        /* Annotate tab tip */
+        .annotate-tip {
+            margin-top: 18px;
+            padding: 10px 12px;
+            background: #fffde7;
+            border: 1px solid #ffe082;
+            border-radius: 6px;
+            font-size: 11.5px;
+            color: #6d4c00;
+            line-height: 1.5;
+        }
+
+        /* Export tab tip */
+        .export-tip {
+            margin-top: 16px;
+            padding: 10px 12px;
+            background: #f3f0ff;
+            border: 1px solid #c5b8f5;
+            border-radius: 6px;
+            font-size: 11.5px;
+            color: #4a3880;
+            line-height: 1.6;
+        }
+
+        /* Override default button margin inside tabs */
+        .tab-content button {
+            margin-top: 0;
+        }
+        .tab-content button + button {
+            margin-top: 6px;
+        }
+        .tab-content .button-group button {
+            margin-top: 0;
+        }
+
+        /* Scrollbar styling for tab content */
+        .tab-content::-webkit-scrollbar { width: 5px; }
+        .tab-content::-webkit-scrollbar-track { background: transparent; }
+        .tab-content::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+        .tab-content::-webkit-scrollbar-thumb:hover { background: #aaa; }
     </style>
 </head>
 
@@ -558,7 +752,7 @@
     <div class="container">
         <div class="app-header">
             <div class="header">
-                <h1 class="app-title">Advanced Chromatogram Analyzer V4.25</h1>
+                <h1 class="app-title">Advanced Chromatogram Analyzer v4.5</h1>
                 <h2 style="display:none;">Free online tool for ÄKTA file visualization, peak integration, and protein
                     concentration calculation.</h2>
                 <p class="app-subtitle">Interactive visualization and analysis of chromatography data.</p>
@@ -579,54 +773,89 @@
                 </div>
             </div>
 
+            <!-- TABBED CONTROLS PANEL -->
             <div class="controls-panel">
-                <div class="control-group">
-                    <h3>📂 Data Import</h3>
+                <!-- Tab Navigation Bar -->
+                <div class="tab-nav" role="tablist" aria-label="Control Panel Tabs">
+                    <button class="tab-btn active" onclick="switchTab('import', this)" role="tab" aria-selected="true" title="Data Import">
+                        <span class="tab-icon">📂</span>
+                        <span class="tab-label">Import</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('plot', this)" role="tab" aria-selected="false" title="Plot Selection &amp; Styling">
+                        <span class="tab-icon">📊</span>
+                        <span class="tab-label">Plot</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('analysis', this)" role="tab" aria-selected="false" title="Integration &amp; Analysis">
+                        <span class="tab-icon">🔬</span>
+                        <span class="tab-label">Analysis</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('annotate', this)" role="tab" aria-selected="false" title="Fractions &amp; Regions">
+                        <span class="tab-icon">🏷️</span>
+                        <span class="tab-label">Annotate</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('export', this)" role="tab" aria-selected="false" title="Export &amp; Actions">
+                        <span class="tab-icon">💾</span>
+                        <span class="tab-label">Export</span>
+                    </button>
+                </div>
+
+                <!-- ─── TAB 1: Import ─── -->
+                <div class="tab-content active" id="tab-import">
+                    <div class="tab-section-label">Open Data File</div>
                     <div class="file-input-wrapper">
-                        <button onclick="document.getElementById('fileInput').click()">
+                        <button onclick="document.getElementById('fileInput').click()" class="btn-import">
                             📁 Open ÄKTA File (TXT/CSV)
                         </button>
                         <input type="file" id="fileInput" accept=".txt,.csv">
                     </div>
-                    <button onclick="openCustomImport()" title="Import specific columns from CSV/Excel files">
+                    <button onclick="openCustomImport()" title="Import specific columns from CSV/Excel files" class="btn-import-secondary">
                         ⚙️ Custom Import (CSV/Excel)
                     </button>
-                    <hr style="margin: 15px 0;">
-                    <button onclick="saveSession()" id="saveSessionBtn" class="button-success" disabled
-                        title="Save current session to JSON file">
-                        💾 Save Session
-                    </button>
-                    <div class="file-input-wrapper">
-                        <button onclick="document.getElementById('loadSessionInput').click()" class="button-success"
-                            title="Load previously saved session">
-                            📂 Load Session
+
+                    <div class="tab-section-label" style="margin-top: 14px;">Session</div>
+                    <div class="button-grid-2">
+                        <button onclick="saveSession()" id="saveSessionBtn" class="button-success" disabled
+                            title="Save current session to JSON file">
+                            💾 Save
                         </button>
-                        <input type="file" id="loadSessionInput" accept=".json" onchange="loadSession(event)"
-                            style="display: none;">
+                        <div class="file-input-wrapper" style="flex:1;">
+                            <button onclick="document.getElementById('loadSessionInput').click()" class="button-success"
+                                title="Load previously saved session" style="width:100%;">
+                                📂 Load
+                            </button>
+                            <input type="file" id="loadSessionInput" accept=".json" onchange="loadSession(event)"
+                                style="display: none;">
+                        </div>
                     </div>
-                    <hr style="margin: 15px 0;">
-                    <div id="undoRedoContainer" style="display: flex; gap: 10px; margin-top: 8px;">
+
+                    <div class="tab-section-label" style="margin-top: 14px;">History</div>
+                    <div id="undoRedoContainer" style="display: flex; gap: 10px;">
                         <button onclick="undoEdit()" id="undoBtn" class="button-secondary"
-                            style="padding: 8px 15px; font-size: 13px; flex: 1;" disabled>
+                            style="flex: 1;" disabled>
                             ↩️ Undo
                         </button>
                         <button onclick="redoEdit()" id="redoBtn" class="button-secondary"
-                            style="padding: 8px 15px; font-size: 13px; flex: 1;" disabled>
+                            style="flex: 1;" disabled>
                             ↪️ Redo
                         </button>
                     </div>
+
+                    <div class="import-hint">
+                        <strong>Supported formats:</strong> ÄKTA TXT/TSV, CSV (comma/tab/semicolon), Excel (.xlsx/.xls)
+                    </div>
                 </div>
 
-                <div class="control-group">
-                    <h3>📊 Plot Selection & Styling</h3>
+                <!-- ─── TAB 2: Plot ─── -->
+                <div class="tab-content" id="tab-plot">
+                    <div class="tab-section-label">Data Series</div>
                     <div class="checkbox-group" id="plotCheckboxes">
                         <p style="color: #999; font-size: 13px;">Load data to see variables</p>
                     </div>
-                    <hr style="margin: 15px 0;">
-                    <!-- Fraction Styling Section -->
-                    <div class="checkbox-item" style="margin-bottom: 5px;">
+
+                    <div class="tab-section-label" style="margin-top: 14px;">Fractions on Plot</div>
+                    <div class="checkbox-item" style="margin-bottom: 6px;">
                         <input type="checkbox" id="showFractionsCheck" disabled onchange="plotGraph()">
-                        <label for="showFractionsCheck" style="font-weight: bold;">Show Fractions on Plot</label>
+                        <label for="showFractionsCheck" style="font-weight: 600; font-size: 13px;">Show Fractions</label>
                     </div>
                     <div class="style-controls fraction-style-controls">
                         <input type="color" id="fractionLineColorInput" class="color-picker" title="Fraction Line Color"
@@ -637,17 +866,14 @@
                             onchange="applyFractionRegionStyles()">
                     </div>
 
-                    <hr style="margin: 15px 0;">
-                    <!-- Region Styling Section -->
-                    <div class="checkbox-item" style="margin-bottom: 5px;">
+                    <div class="tab-section-label" style="margin-top: 14px;">Regions on Plot</div>
+                    <div class="checkbox-item" style="margin-bottom: 6px;">
                         <input type="checkbox" id="showRegionsCheck" disabled onchange="plotGraph()" checked>
-                        <label for="showRegionsCheck" style="font-weight: bold;">Show Regions on Plot</label>
+                        <label for="showRegionsCheck" style="font-weight: 600; font-size: 13px;">Show Regions</label>
                     </div>
-                    <!-- X-Axis Control Panel -->
-                    <div
-                        style="background: #f8f9fa; padding: 10px; border: 1px solid #e9ecef; border-radius: 6px; margin-bottom: 10px;">
-                        <label style="font-weight: 600; color: #495057; display: block; margin-bottom: 8px;">X-Axis
-                            Range</label>
+
+                    <div class="tab-section-label" style="margin-top: 14px;">X-Axis Range</div>
+                    <div style="background: #f8f9fa; padding: 10px; border: 1px solid #e9ecef; border-radius: 6px; margin-bottom: 4px;">
                         <div class="range-control" style="gap: 8px; margin-bottom: 10px;">
                             <div class="range-item" style="flex: 1;">
                                 <label for="xAxisStart" style="font-size: 12px;">Start:</label>
@@ -658,90 +884,73 @@
                                 <input type="number" id="xAxisEnd" step="1" disabled style="width: 100%;">
                             </div>
                         </div>
-                        <button onclick="resetXAxis()" class="button-secondary" style="margin-top: 0;">↺ Reset
-                            Scale</button>
+                        <button onclick="resetXAxis()" class="button-secondary" style="margin-top: 0;">↺ Reset Scale</button>
                     </div>
-                    <hr style="margin: 15px 0;">
-                    <!-- Edit Mode Toggle -->
+
+                    <div class="tab-section-label" style="margin-top: 14px;">Edit Mode</div>
                     <div class="checkbox-item"
                         style="margin-bottom: 10px; background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 10px; border-radius: 8px; border: 1px solid #ffb74d;">
                         <input type="checkbox" id="editModeCheck" onchange="toggleEditMode()">
-                        <label for="editModeCheck" style="font-weight: bold; color: #e65100;">✏️ Edit Mode (Drag
-                            Labels)</label>
+                        <label for="editModeCheck" style="font-weight: bold; color: #e65100; font-size: 13px;">✏️ Drag Labels Mode</label>
                         <p id="editModeHint" style="font-size: 11px; color: #bf360c; margin: 5px 0 0 0; display: none;">
                             <strong>Click</strong> labels to edit • <strong>Drag</strong> legend/labels
                         </p>
-
                     </div>
-                    <button onclick="plotGraph()" id="plotBtn" disabled>
+
+                    <button onclick="plotGraph()" id="plotBtn" disabled style="margin-top: 4px;">
                         📊 Update Plot
                     </button>
                 </div>
 
-                <div class="control-group">
-                    <h3>Column Parameters</h3>
-                    <details open>
-                        <summary style="cursor: pointer; font-size: 0.9em;">Show Column Parameters</summary>
-                        <div class="range-control" style="margin-top: 10px;">
-                            <div class="range-item">
-                                <label for="colLength" style="min-width: 120px;">Column length (mm):</label>
-                                <input type="number" id="colLength" value="20" step="1">
-                            </div>
-                        </div>
-                    </details>
-                </div>
+                <!-- ─── TAB 3: Analysis ─── -->
+                <div class="tab-content" id="tab-analysis">
+                    <div class="tab-section-label">Column Parameters</div>
+                    <div class="range-item" style="margin-bottom: 10px;">
+                        <label for="colLength" style="font-size: 13px; color: #555; min-width: 130px;">Column length (mm):</label>
+                        <input type="number" id="colLength" value="20" step="1">
+                    </div>
 
-                <div class="control-group">
-                    <h3>📐 Integration & Analysis</h3>
-                    <div style="margin-bottom: 10px;">
+                    <div class="tab-section-label" style="margin-top: 6px;">Integration Range</div>
+                    <div style="margin-bottom: 8px;">
                         <label style="font-size: 13px; color: #555;">Primary Variable:</label>
                         <select id="primaryVarSelect" disabled>
                             <option value="">Select variable...</option>
                         </select>
                     </div>
-
-                    <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 5px;">
-                        <input type="checkbox" id="useBaselineCutCheck" onchange="updateIntegration(); plotGraph();"
-                            disabled>
-                        <label for="useBaselineCutCheck" style="cursor: pointer; font-size: 13px;">Use UV-Baseline
-                            Corrected Data</label>
+                    <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" id="useBaselineCutCheck" onchange="updateIntegration(); plotGraph();" disabled>
+                        <label for="useBaselineCutCheck" style="cursor: pointer; font-size: 13px;">UV-Baseline Corrected</label>
                     </div>
-
-                    <div style="margin-bottom: 10px;">
-                        <label style="font-size: 13px; color: #555;">Manual Baseline (mAU):</label>
+                    <div style="margin-bottom: 8px;">
+                        <label style="font-size: 12px; color: #555;">Manual Baseline (mAU):</label>
                         <input type="number" id="manualBaselineInput" value="0" step="0.1"
                             onchange="updateIntegration(); plotGraph();" disabled
                             style="width: 100%; padding: 5px; border: 1px solid #ced4da; border-radius: 4px;">
                     </div>
-
-                    <div class="range-control">
+                    <div class="range-control" style="margin-bottom: 6px;">
                         <div class="range-item">
-                            <label>Start:</label>
+                            <label>Start (mL):</label>
                             <input type="number" id="integStartValue" value="0" step="0.1" disabled>
                         </div>
                         <div class="range-item">
-                            <label>End:</label>
+                            <label>End (mL):</label>
                             <input type="number" id="integEndValue" value="0" step="0.1" disabled>
                         </div>
                     </div>
-
-                    <div style="margin-top: 10px;">
-                        <label style="font-size: 13px; cursor: pointer; display: block; margin-bottom: 5px;">
+                    <div style="margin-bottom: 6px; display: flex; flex-direction: column; gap: 4px;">
+                        <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                             <input type="checkbox" id="showIntegrationLinesCheck" disabled onchange="plotGraph()">
                             Show Integration Lines
                         </label>
-
-                        <label style="font-size: 13px; cursor: pointer; display: block; margin-bottom: 5px;">
+                        <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                             <input type="checkbox" id="snapToFractionsIntegCheck" disabled>
                             Snap to Fractions
                         </label>
-
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <label style="font-size: 13px; cursor: pointer;">
+                            <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                                 <input type="checkbox" id="showIntegRegionCheck" disabled onchange="plotGraph()">
                                 Show Region
                             </label>
-
                             <div style="display: flex; align-items: center; gap: 5px;">
                                 <label style="font-size: 12px;">Color:</label>
                                 <input type="color" id="integFillColor" value="#cccccc"
@@ -751,33 +960,25 @@
                         </div>
                     </div>
 
-
-
-
+                    <div class="tab-section-label" style="margin-top: 10px;">Results</div>
                     <div class="integration-info" id="integrationInfo">
-                        <div><strong>Asymmetry (As):</strong> <span id="integAsymmetryVal">-</span></div>
-                        <div><strong>HETP:</strong> <span id="integHETPVal">-</span></div>
+                        <div class="result-row"><span class="result-label">Asymmetry (As):</span> <span id="integAsymmetryVal" class="result-value">-</span></div>
+                        <div class="result-row"><span class="result-label">HETP:</span> <span id="integHETPVal" class="result-value">-</span></div>
                         <div id="concWarning"
-                            style="color: #dc3545; font-size: 12px; display: none; margin-top: 8px; padding: 5px; background: #ffe6e6; border-radius: 4px;">
+                            style="color: #dc3545; font-size: 12px; display: none; margin: 4px 0; padding: 5px; background: #ffe6e6; border-radius: 4px;">
                             ⚠️ Concentration calculation requires UV data.
                         </div>
-                        <div style="border-top: 1px solid #ddd; margin-top: 5px; padding-top: 5px;">
-                            <strong>Area:</strong> <span id="integAreaVal">-</span>
-                        </div>
-                        <div><strong>Volume:</strong> <span id="integVolumeVal">-</span></div>
-                        <div><strong>Range:</strong> <span id="integRangeVal">-</span></div>
-                        <div><strong>Amount:</strong> <span id="integAmountVal">-</span></div>
-                        <div><strong>Concentration:</strong> <span id="integConcVal">-</span></div>
-
+                        <div class="result-row result-divider"><span class="result-label">Area:</span> <span id="integAreaVal" class="result-value">-</span></div>
+                        <div class="result-row"><span class="result-label">Volume:</span> <span id="integVolumeVal" class="result-value">-</span></div>
+                        <div class="result-row"><span class="result-label">Range:</span> <span id="integRangeVal" class="result-value">-</span></div>
+                        <div class="result-row"><span class="result-label">Amount:</span> <span id="integAmountVal" class="result-value">-</span></div>
+                        <div class="result-row"><span class="result-label">Conc.:</span> <span id="integConcVal" class="result-value">-</span></div>
                     </div>
-                    <hr style="margin: 10px 0;">
-                    <button onclick="openConcentrationCalculator()" id="calcBtn" disabled class="button-success">
+                    <button onclick="openConcentrationCalculator()" id="calcBtn" disabled class="button-success" style="margin-top: 8px;">
                         🧪 Calculate Concentration
                     </button>
-                    <hr style="margin: 10px 0;">
-                    <h4 style="font-size: 13px; font-weight: 600; color: #555; margin-bottom: 8px;">Peak Detection
-                    </h4>
 
+                    <div class="tab-section-label" style="margin-top: 14px;">Peak Detection</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                         <div class="form-group" style="margin:0">
                             <label style="font-size: 11px;">Min Height (mAU):</label>
@@ -799,33 +1000,48 @@
                     </div>
                 </div>
 
-                <div class="control-group">
-                    <h3>🧫 Fractions</h3>
+                <!-- ─── TAB 4: Annotate ─── -->
+                <div class="tab-content" id="tab-annotate">
+                    <div class="tab-section-label">Fractions</div>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 8px;">Define and manage elution fraction markers on the plot.</p>
                     <button onclick="openFractionManager()" id="fractionBtn" disabled>
                         📋 Manage Fractions
                     </button>
-                </div>
 
-                <div class="control-group">
-                    <h3>🎨 Label Regions</h3>
+                    <div class="tab-section-label" style="margin-top: 18px;">Label Regions</div>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 8px;">Add colored shaded regions with labels (e.g., Wash, Elution).</p>
                     <button onclick="openRegionManager()" id="regionBtn" disabled>
-                        📋 Manage Regions
+                        🎨 Manage Regions
                     </button>
+
+                    <div class="annotate-tip">
+                        💡 <strong>Tip:</strong> Enable <em>Edit Mode</em> on the Plot tab to drag labels and the legend directly on the chart.
+                    </div>
                 </div>
 
-                <div class="control-group">
-                    <h3>💾 Export & Actions</h3>
+                <!-- ─── TAB 5: Export ─── -->
+                <div class="tab-content" id="tab-export">
+                    <div class="tab-section-label">Save Image</div>
                     <button onclick="openSaveImageModal()" id="saveBtn" disabled>
                         💾 Save as PNG
                     </button>
-                    <button onclick="openFontSettings()" id="fontBtn" disabled class="button-secondary">
-                        ⚙️ Font and Style Settings
-                    </button>
-                    <button onclick="copyToClipboard()" id="copyBtn" disabled class="button-secondary">
+                    <button onclick="copyToClipboard()" id="copyBtn" disabled class="button-secondary" style="margin-top: 6px;">
                         📋 Copy to Clipboard
                     </button>
+
+                    <div class="tab-section-label" style="margin-top: 18px;">Chart Appearance</div>
+                    <button onclick="openFontSettings()" id="fontBtn" disabled class="button-secondary">
+                        ⚙️ Font &amp; Style Settings
+                    </button>
+
+                    <div class="export-tip">
+                        <strong>PNG Export Tips:</strong><br>
+                        • Use <em>Print Quality (4×)</em> for publications<br>
+                        • Use <em>Ultra High (6×)</em> for poster figures<br>
+                        • Copy to Clipboard for quick pasting into documents
+                    </div>
                 </div>
-            </div>
+            </div><!-- end .controls-panel -->
         </div>
     </div>
 
@@ -3575,6 +3791,22 @@
         window.onclick = event => {
             if (event.target.className === 'modal') event.target.style.display = 'none';
         };
+
+        // ─── TAB SWITCHING ───────────────────────────────────────────
+        function switchTab(tabName, btn) {
+            // Deactivate all tabs and contents
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            // Activate the clicked tab
+            btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+            const content = document.getElementById('tab-' + tabName);
+            if (content) content.classList.add('active');
+        }
 
         console.log('Advanced Chromatogram Analyzer initialized');
     </script>
