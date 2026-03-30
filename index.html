@@ -752,7 +752,7 @@
     <div class="container">
         <div class="app-header">
             <div class="header">
-                <h1 class="app-title">Advanced Chromatogram Analyzer v4.5</h1>
+                <h1 class="app-title">Advanced Chromatogram Analyzer v5</h1>
                 <h2 style="display:none;">Free online tool for ÄKTA file visualization, peak integration, and protein
                     concentration calculation.</h2>
                 <p class="app-subtitle">Interactive visualization and analysis of chromatography data.</p>
@@ -766,6 +766,25 @@
             <div>
                 <div class="chart-container">
                     <div id="plotlyChart"></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 10px 15px; border-radius: 6px; border: 1px solid #ffb74d;">
+                    <div class="checkbox-item" style="margin-bottom: 0;">
+                        <input type="checkbox" id="editModeCheck" onchange="toggleEditMode()">
+                        <label for="editModeCheck" style="font-weight: bold; color: #e65100; font-size: 14px;">✏️ Drag Labels Mode</label>
+                        <span id="editModeHint" style="font-size: 12px; color: #bf360c; margin-left: 10px; display: none;">
+                            <strong>Click</strong> labels to edit • <strong>Drag</strong> legend/labels
+                        </span>
+                    </div>
+
+                    <div id="undoRedoContainer" style="display: flex; gap: 10px;">
+                        <button onclick="undoEdit()" id="undoBtn" class="button-secondary" style="margin: 0; padding: 6px 15px; width: auto; font-size: 13px;" disabled>
+                            ↩️ Undo
+                        </button>
+                        <button onclick="redoEdit()" id="redoBtn" class="button-secondary" style="margin: 0; padding: 6px 15px; width: auto; font-size: 13px;" disabled>
+                            ↪️ Redo
+                        </button>
+                    </div>
                 </div>
 
                 <div class="status-bar" id="statusBar">
@@ -828,18 +847,6 @@
                         </div>
                     </div>
 
-                    <div class="tab-section-label" style="margin-top: 14px;">History</div>
-                    <div id="undoRedoContainer" style="display: flex; gap: 10px;">
-                        <button onclick="undoEdit()" id="undoBtn" class="button-secondary"
-                            style="flex: 1;" disabled>
-                            ↩️ Undo
-                        </button>
-                        <button onclick="redoEdit()" id="redoBtn" class="button-secondary"
-                            style="flex: 1;" disabled>
-                            ↪️ Redo
-                        </button>
-                    </div>
-
                     <div class="import-hint">
                         <strong>Supported formats:</strong> ÄKTA TXT/TSV, CSV (comma/tab/semicolon), Excel (.xlsx/.xls)
                     </div>
@@ -885,16 +892,6 @@
                             </div>
                         </div>
                         <button onclick="resetXAxis()" class="button-secondary" style="margin-top: 0;">↺ Reset Scale</button>
-                    </div>
-
-                    <div class="tab-section-label" style="margin-top: 14px;">Edit Mode</div>
-                    <div class="checkbox-item"
-                        style="margin-bottom: 10px; background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 10px; border-radius: 8px; border: 1px solid #ffb74d;">
-                        <input type="checkbox" id="editModeCheck" onchange="toggleEditMode()">
-                        <label for="editModeCheck" style="font-weight: bold; color: #e65100; font-size: 13px;">✏️ Drag Labels Mode</label>
-                        <p id="editModeHint" style="font-size: 11px; color: #bf360c; margin: 5px 0 0 0; display: none;">
-                            <strong>Click</strong> labels to edit • <strong>Drag</strong> legend/labels
-                        </p>
                     </div>
 
                     <button onclick="plotGraph()" id="plotBtn" disabled style="margin-top: 4px;">
