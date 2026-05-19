@@ -252,17 +252,24 @@
             flex-direction: column;
             gap: 8px;
             overflow-y: auto;
+            min-height: 300px;
+            max-height: 40vh;
+            width: 100%;
+            min-width: 0;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
             gap: 8px;
+            min-width: 0;
+            width: 100%;
         }
 
         .checkbox-item input[type="checkbox"] {
             width: 18px;
             height: 18px;
+            flex-shrink: 0;
             cursor: pointer;
         }
 
@@ -270,14 +277,21 @@
             cursor: pointer;
             font-size: 14px;
             color: #333;
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .style-controls {
             display: grid;
-            grid-template-columns: auto 1fr auto;
+            grid-template-columns: auto minmax(0, 1fr) auto;
             gap: 8px;
             margin-top: 5px;
             align-items: center;
+            width: 100%;
+            min-width: 0;
         }
 
         .range-control {
