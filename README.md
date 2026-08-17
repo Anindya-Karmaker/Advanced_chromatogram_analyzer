@@ -113,7 +113,7 @@ Developed by Anindya Karmaker. All rights reserved. Unauthorized copy or distrib
 If you use **Advanced Chromatogram Analyzer** in your research, presentations, or publications, please cite it as follows or Click on Zenode link for details:
 **Zenode Link:**
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21973380.svg)](https://doi.org/10.5281/zenodo.21973380)
+[![DOI](https://zenodo.org/badge/926739220.svg)](https://doi.org/10.5281/zenodo.21973380)
 
 **APA Format:**
 
