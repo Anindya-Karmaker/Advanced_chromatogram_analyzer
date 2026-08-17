@@ -110,18 +110,12 @@ Developed by Anindya Karmaker. All rights reserved. Unauthorized copy or distrib
 
 ## Citation
 
-If you use **Advanced Chromatogram Analyzer** in your research, presentations, or publications, please cite it as follows:
+If you use **Advanced Chromatogram Analyzer** in your research, presentations, or publications, please cite it as follows or Click on Zenode link for details:
+**Zenode Link:**
+[![DOI](https://zenodo.org/badge/926739220.svg)](https://doi.org/10.5281/zenodo.21973380)
 
 **APA Format:**
-> Karmaker, A., McCormick, A., Nandi, S., & McDonald, K. (2025). *Advanced Chromatogram Analyzer* [Software]. McDonald-Nandi Lab, University of California, Davis. https://github.com/Anindya-Karmaker/Advanced_chromatogram_analyzer
+Karmaker, A., Nandi, S.& McDonald, K. (2026). Advanced Chromatogram Analyzer v5.0 (Version ACA_v5) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.21973381
 
-**BibTeX:**
-```bibtex
-@software{AdvancedChromatogramAnalyzer2025,
-  author = {Karmaker, Anindya and McCormick, Alison and Nandi, Somen and McDonald, Karen},
-  title = {Advanced Chromatogram Analyzer},
-  year = {2025},
-  url = {https://github.com/Anindya-Karmaker/Advanced_chromatogram_analyzer},
-  organization = {McDonald-Nandi Lab, University of California, Davis},
-  version = {4.0}
-}
+**IEEE Format**
+A. Karmaker, S. Nandiand K. McDonald, Advanced Chromatogram Analyzer v5.0. (Aug. 17, 2026). Zenodo. doi: 10.5281/zenodo.21973381.
